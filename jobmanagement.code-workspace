@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{   
+			"name": "main",
+			"path": "."
+		},
+		{
+			"name": "job",
+			"path": "job"
+		},
+		{
+			"name": "task",
+			"path": "task"
+		}
+	],
+		"settings": {
+		"files.exclude": {
+		  "job": true,
+		  "task": true
+		},
+		"objectscript.conn.active": false,
+	}
+}

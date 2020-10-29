@@ -1,0 +1,114 @@
+ROUTINE timing
+#include %occStatus
+
+loop() public {
+ s st=$ZH for i=1:1:1000 { d ^test1 } w $ZH-st,!
+}
+#; 連携基盤側からターゲットへのリクエスト送信、およびその返信(Deferred)にかかる時間を計測
+measure(loop=1000) public {
+	#; WebServiceの場合
+	Set st=$ZH For i=1:1:loop { d callws(0) } w $ZH-st,!
+	#; RESTの場合
+	Set st=$ZH For i=1:1:loop { d callrs(0) } w $ZH-st,!
+}
+
+callws(loop=0) public {
+	Set wsc=##class(WSClient.MainSoap).%New()
+	Set user="_SYSTEM"
+	Set pwd="sys" 
+	Set utoken=##class(%SOAP.Security.UsernameToken).Create(user,pwd)
+	Do wsc.SecurityOut.AddSecurityElement(utoken)
+	Set wsc.Timeout=660
+	For i=1:1:loop {
+		Set tSC=wsc.RunTask(1,"User.Timing","tokenstring",0,1,2,3,4,5)
+		If $$$ISERR(tSC) throw ##class(%Exception.StatusException).CreateFromStatus(tSC)
+	}
+	Quit
+}
+callrs(loop=0) public {
+	Set httpreq=##class(%Net.HttpRequest).%New()
+	Set httpreq.Server="localhost"
+	Set httpreq.Port=52773
+	Set httpreq.Username="SuperUser"
+	Set httpreq.Password="sys"
+	Set httpreq.ContentType="application/json; charset=UTF-8"
+	
+	Set url="/csp/task/api/RunTask"
+	Set request={}
+	Set request.SessionId=1
+	Set request.Taskname="User.Timing"
+	Set request.Deferred=0
+	Set request.Token="tokenstring"
+	Set request.P1=1
+	Set request.P2=2
+	Set request.P3=3
+	Set request.P4=4
+	Set request.P5=5
+
+	Set Reset=1
+	For i=1:1:loop {
+		do httpreq.EntityBody.Write(request.%ToJSON())
+		Set tSC=httpreq.Post(url,0,Reset)  // need to set Reset=0 to repeat POST !!!
+		If $$$ISERR(tSC) throw ##class(%Exception.StatusException).CreateFromStatus(tSC)
+		If (httpreq.HttpResponse.StatusCode'=200) { w httpreq.HttpResponse.StatusCode,! b }
+	}
+	Quit
+}
+
+#; EnsLib.REST.Operationの挙動調査用。接続は毎回発生するので、TIME_WAITの発生は不可避。
+#; TIME_WAITは、Operation->ターゲットのWEB Server間、ターゲットのhttpclient->連携基盤のWEB Server間で発生。
+#; TCP系のOperationにはStayConnectedがあるので、TIME_WAITが問題になるほど頻繁にリクエストが
+#; 生じるようであれば、そちらの選択も視野に。
+#; あるいは、専用のJOBをEnsemble外に用意するか。
+#; あるいは、tcp_tw_reuseを設定(Linux), TcpTimedWaitDelay(Windows)で調整するか。
+#; d call^timing()
+call(loop=1,target="Target1",taskname="MyTask.NewClass1") public {
+	Set st=$ZH
+	Set tSC = ##class(Ens.Director).CreateBusinessService("Test.Service.Call",.tService)
+	If ($IsObject(tService)) {
+		Set input=##class(Task.Request.CallTask).%New()
+		Set input.SessionId=1
+		Set input.Target=target
+		Set input.TaskName=taskname
+		Set input.Deferred=0
+		Set input.P1="abc"
+		Set input.P2=0
+		f i=1:1:loop {
+			Set tSC = tService.ProcessInput(input,.output)
+			If (output.TaskStatus'="OK") { zw output b }
+		}
+	}
+	w $ZH-st,!
+}
+
+osdir() public {
+	Set tSC = ##class(Ens.Director).CreateBusinessService("Test.Service.Call",.tService)
+	If ($IsObject(tService)) {
+		Set input=##class(Task.Request.CallTask).%New()
+		Set input.SessionId=1
+		Set input.Target="Target1"
+		Set input.TaskName="MyTask.OSDir"
+		Set input.Deferred=0
+		Set input.P1="c:\temp\"
+		Set input.P2="c:\temp\a.txt"
+		Set tSC = tService.ProcessInput(input,.output)
+		If (output.TaskStatus'="OK") { zw output b }
+	}
+
+}
+
+test2b(loop=1,p1="abc",halttime=0) public {
+	Set st=$ZH
+	For i=1:1:loop {
+		Set tSC = ##class(Ens.Director).CreateBusinessService("Initiator",.tService)
+		If ($IsObject(tService)) {
+			Set input=##class(Task.Request.CallJob).%New()
+			Set input.JobName="Job2b"
+			Set input.P1=p1
+			Set input.P2=halttime
+			Set tSC = tService.ProcessInput(input,.output)
+			If (output.JobStatus'="OK") { zw output b }
+		}
+	}
+	w $ZH-st,!
+}

@@ -1,0 +1,128 @@
+ROUTINE init
+#include EnsConstants  
+#include %occStatus
+ w "Stopping production",!
+ W ##class(Ens.Director).StopProduction(100,1),! //wait 100secs, force to stop
+ Do ##class(Ens.Director).GetProductionStatus(.p1,.p2) 
+ If p2=$$$eProductionStateSuspended  {
+	 W "Production suspended, not stopped.",!
+	 Do DumpQueue
+	 Do ##class(Ens.Director).CleanProduction()
+ }
+ Do Cleanup
+ 
+ h 5
+ 
+ ;W !,"Not restarting",! Quit
+ Do ##class(Ens.Director).StartProduction("Task.Production1")
+ Quit
+
+Cleanup
+
+ Kill ^MyTask.NewClass
+
+ &SQL(delete FROM Ens_Alerting.ManagedAlert)
+ &SQL(delete FROM EnsLib_Workflow.Worklist)
+ Do ##class(Ens.Purge).KillGlobals(,,,1)   // for debug/dev environment only!!
+ k ^Ens.AppData
+ 
+ Quit
+
+DumpQueue
+		Set tRS = ##class(%ResultSet).%New("Ens.Queue:Enumerate")
+		Do tRS.Execute()
+		Set i=0  While tRS.Next(.tSC) && $$$ISOK(tSC) {
+			w tRS.Data("Name")," ",tRS.Data("Count")," ",tRS.Data("Created"),!	
+		}
+
+ Quit
+
+SetupEnv(Namespace="job") public {
+	If $ZCVT($NAMESPACE,"L")'=Namespace {
+		Write "ネームスペース"_Namespace_"で実行してください。",!
+		Quit
+	}
+	New $NAMESPACE
+	Set $NAMESPACE="%SYS"
+	
+	#; /csp/testをAnalytics有効に。(Workflow portal使用のため)
+	Set webapp="/csp/"_Namespace
+	Set tSC = ##Class(Security.Applications).Get(webapp,.props)
+	w "Get WebApp:",tSC,!
+	Set props("DeepSeeEnabled")=1
+	Set tSC = ##Class(Security.Applications).Modify(webapp,.props)
+	w "Modify Analytics:",tSC,!
+
+	#; /csp/job/api Task.REST.Dispatcherを登録
+	Set webapp="/csp/"_Namespace_"/api"
+	If '##class(Security.Applications).Exists(webapp) {
+		Set tSC = ##Class(Security.Applications).Create(webapp)
+		w "Create WebApp for REST:",tSC,!
+	}
+	Set tSC = ##Class(Security.Applications).Get(webapp,.props)
+	w "Get WebApp for REST:",tSC,!
+	Set props("DispatchClass")="Task.REST.Dispatcher"
+	Set props("Resource")=""
+	Set props("AutheEnabled")=32
+	Set props("NameSpace")=Namespace
+	Set props("IsNameSpaceDefault")=0
+	Set tSC = ##Class(Security.Applications).Modify(webapp,.props)
+	w "Modify WebApp for REST:",tSC,!
+
+	Set $NAMESPACE=Namespace
+	#; Workflow User 追加
+	Set username="_SYSTEM"
+	If '##class(EnsLib.Workflow.UserDefinition).%ExistsId(username) {
+		Set tSC=##class(EnsLib.Workflow.UserDefinition).CreateUser(username,"Workflow User "_username)
+		w "Create workflow User:",tSC,!
+	}
+
+	#; Workflow Role 追加
+	If '##class(EnsLib.Workflow.RoleDefinition).%ExistsId("Operator") {
+		Set tSC=##class(EnsLib.Workflow.RoleDefinition).CreateRole("Operator")
+		w "Create Role:",tSC,!
+	}
+
+	#; Workflow Role に Userを追加
+	Set tSC=##class(EnsLib.Workflow.RoleDefinition).AddUserToRole("Operator",username,,"Workflow Role "_username)
+	If $$$ISERR(tSC) { w "Add User to Role:",! zw tSC }
+
+	#; Credentialを追加/変更
+	Set tSC=##class(Ens.Config.Credentials).SetCredential("default","_SYSTEM","SYS",1)
+	w "Set Credentials:",tSC,!
+				
+	#;IRISタスクを追加
+	Set task = ##class(%SYS.Task).%New()
+	Set task.Name = "Job1"
+	Set task.Description = "Call Job1"
+	Set task.NameSpace = "JOB"
+	Set task.TaskClass = "SysTask.Job1"
+	Set task.TimePeriod = 0
+	Set task.DailyFrequency = 1
+	Set task.DailyFrequencyTime = 0
+	Set task.DailyIncrement = 5
+	Set task.SuspendOnError=1
+	Set task.RunAsUser = "SuperUser"
+	Set task.RescheduleOnStart = 1
+	Set task.RescheduleOnStart = 1
+	Set task.TimePeriodEvery = 1
+	Set task.Type=2
+	Set task.StartDate = +$H
+	Set tSC = task.%Save()	
+	w "Register Task:",tSC,!
+	/*
+	#; Generate W/S clients
+	Set user="SuperUser"
+	Set pass="sys"
+	Set port=52773
+	Set server="http://localhost:"_port_"/csp/task"
+	
+	Set r=##class(%SOAP.WSDL.Reader).%New()
+	Set r.ClientPackage="WSClient"
+	Set r.MakePersistent=1
+	Set url=server_"/Task.WS.Main.cls?WSDL=1&IRISUserName="_user_"&IRISPassword="_pass
+	Set tSC=r.Process(url)
+	If $$$ISERR(tSC) { b }
+	*/
+
+}

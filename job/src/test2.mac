@@ -1,0 +1,14 @@
+ROUTINE test2
+main(p1="abc",halttime=0) public {
+	;
+	Set tSC = ##class(Ens.Director).CreateBusinessService("Initiator",.tService)
+	If ($IsObject(tService)) {
+		;Set input = ##class(Ens.StringRequest).%New()
+		Set input=##class(Task.Request.CallJob).%New()
+		Set input.JobName="Job2"
+		Set input.P1=p1
+		Set input.P2=halttime
+		Set tSC = tService.ProcessInput(input,.output)
+		zw output
+	}
+}

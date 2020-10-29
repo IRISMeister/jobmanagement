@@ -1,0 +1,40 @@
+version: '3.7'
+services: 
+  job: 
+    build: job
+    init: true
+    ports:
+      - 9203:52773
+    environment:
+      TZ: JST-9
+    networks:
+      - iris-tier
+      
+  task: 
+    build: task
+    init: true
+    ports:
+      - 9204:52773
+    environment:
+      TZ: JST-9
+    networks:
+      - iris-tier
+
+  task2: 
+    build: task
+    init: true
+    ports:
+      - 9205:52773
+    environment:
+      TZ: JST-9
+    networks:
+      - iris-tier
+          
+networks:
+  iris-tier:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.1.0/24
+

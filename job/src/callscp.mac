@@ -1,0 +1,25 @@
+ROUTINE callscp
+ #; ターゲットがWindowsの場合、opensshのインストールが必要。
+ #; 参考) https://community.cisco.com/t5/tac-tips-%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88/tips-windows10-%E3%81%B8%E3%81%AE-scp-%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB/ta-p/3893408
+
+ #; パスワード無しで実行できるように事前準備が必要。
+ ;Set zftSC=$ZF(-100,"/SHELL /STDOUT=c:\temp\out.txt","scp","c:\temp\in.txt","user@hostname:")
+#include %occStatus
+ 
+	set ssh = ##class(%Net.SSH.Session).%New()
+	do ssh.Connect("172.18.100.240")
+	do ssh.AuthenticateWithUsername("User","Password")
+	//open an SFTP session and get that returned by reference
+	do ssh.OpenSFTP(.sftp)
+	//get a list of files
+	do sftp.Dir(".",.files)
+	set i=$ORDER(files(""))
+		while i'="" {
+		write $listget(files(i),1),!
+		set i=$ORDER(files(i))
+	}
+	
+	Set tSC=sftp.Get("in.txt","C:\enstest\Paltac\in\in.txt")
+	If $$$ISERR(tSC) zw tSC
+ 
+

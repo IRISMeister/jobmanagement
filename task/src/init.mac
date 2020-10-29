@@ -1,0 +1,40 @@
+ROUTINE init
+#include %occStatus
+	Quit
+	
+SetupEnv() public {
+	New $NAMESPACE
+	Set Namespace=$NAMESPACE
+	Set $NAMESPACE="%SYS"
+	
+	#; /csp/task/api Task.REST.Dispatcherを登録
+	Set webapp="/csp/"_$ZCVT(Namespace,"L")_"/api"
+	If '##class(Security.Applications).Exists(webapp) {
+		Set tSC = ##Class(Security.Applications).Create(webapp)
+	}
+	Set tSC = ##Class(Security.Applications).Get(webapp,.props)
+	Set props("DispatchClass")="Task.REST.Dispatcher"
+	Set props("Resource")=""
+	Set props("AutheEnabled")=32
+	Set props("NameSpace")=Namespace
+	Set props("IsNameSpaceDefault")=0
+	Set tSC = ##Class(Security.Applications).Modify(webapp,.props)
+
+	Set $NAMESPACE=Namespace
+
+	#; Generate W/S clients
+	/*
+	Set user="SuperUser"
+	Set pass="sys"
+	Set port=52773
+	Set server="http://localhost:"_port_"/csp/JOB"
+	
+	Set r=##class(%SOAP.WSDL.Reader).%New()
+	Set r.ClientPackage="WSClient"
+	Set r.MakePersistent=1
+	Set url=server_"/Task.Service.TaskComplete.cls?WSDL=1&IRISUserName="_user_"&IRISPassword="_pass
+	Set tSC=r.Process(url)
+	If $$$ISERR(tSC) { b }	
+	*/
+
+}
