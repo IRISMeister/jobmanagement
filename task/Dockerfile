@@ -1,4 +1,4 @@
-FROM store/intersystems/iris-community:2020.1.0.199.0
+FROM store/intersystems/iris-community:2020.1.0.215.0
 
 ARG COMMIT_ID="unknown"
 

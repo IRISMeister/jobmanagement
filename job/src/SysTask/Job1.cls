@@ -8,7 +8,7 @@ Property P1 As %String;
 Method OnTask() As %Status
 {
 	Set seq=$INCREMENT(^SysTaskLog)
-	Set ^SysTaskLog(seq,1)=$ZDATETIME($H)_"/"_$JOB
+	Set ^SysTaskLog(seq,1)=$ZDATETIME($H)_"/"_"/"_..P1_"/"_$JOB
 	Set tSC=$$$OK
 	If ..JobName="" Return 'tSC
 
