@@ -92,7 +92,6 @@ ClassMethod setup(Namespace As %String, srcdir As %String) As %Status
     Set task.SuspendOnError=1
     Set task.RunAsUser = "SuperUser"
     Set task.RescheduleOnStart = 1
-    Set task.RescheduleOnStart = 1
     Set task.TimePeriodEvery = 1
     Set task.Type=2
     Set task.StartDate = +$H
