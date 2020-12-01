@@ -49,6 +49,11 @@ TASK>h
 ```
 
 ## How to edit with VSCode
-Open jobmanagement.code-workspace file from "Open Workspace".  
-It uses workspace to handle two IRIS connections (namespace JOB and TASK).   
-
+Select "Open Workspace..." and open jobmanagement.code-workspace file.  
+It uses workspace to handle two IRIS namespaces and connections.
+main 
+ docker-compose file. 
+job
+ Docker related files for namespace JOB
+task
+ Docker related files for namespace TASK
