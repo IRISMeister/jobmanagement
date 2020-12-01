@@ -3,7 +3,7 @@
 ## How to install 
 ```bash
 $ git clone https://github.com/IRISMeister/jobmanagement.git
-$ cd jobmanagement
+$ cd jobmanagement/main
 $ docker-compose build
 ```
 ## How to Run 
@@ -48,12 +48,45 @@ TASK>zw ^MyTask
 TASK>h
 ```
 
+You can manually call jobs by 
+```
+$ docker-compose exec job iris session iris -U job test1   (Calls Job1)
+$ docker-compose exec job iris session iris -U job test2   (Calls Job2)
+$ docker-compose exec job iris session iris -U job test3
+$ docker-compose exec job iris session iris -U job test4
+```
+
+To try workflow engine, run the following command.  It forces devision by zero error in MyTask.NewTask2.cls and triggers workflow engine.  This command will be blocked until you perform workflow actions in Analytics/user portal while logging into as _SYSTEM user.
+```
+$ docker-compose exec job iris session iris -U job error1
+```
+Typical action would be 'Accept' and 'Abort', which aborts the blocked BP.  Then you will receive something like this.
+```
+output=6@Task.Response.CallJob  ; <OREF>
++----------------- general information ---------------
+|      oref value: 6
+|      class name: Task.Response.CallJob
+|           %%OID: $lb("221","Task.Response.CallJob")
+| reference count: 2
++----------------- attribute values ------------------
+|       %Concurrency = 1  <Set>
+|            EndTime = "2020-12-01 16:28:55"
+|    JobErrorMessage = "<Ens>ErrBPLThrownFault:TaskFault"
+|          JobStatus = "NG"
+|          StartTime = "2020-12-01 16:24:10"
++-----------------------------------------------------
+$
+```
+
 ## How to edit with VSCode
 Select "Open Workspace..." and open jobmanagement.code-workspace file.  
 It uses workspace to handle two IRIS namespaces and connections.
+You will see three folders.  
+<PRE>
 main 
- docker-compose file. 
+ docker-compose file. Merge cpf file.
 job
- Docker related files for namespace JOB
+ files for namespace JOB
 task
- Docker related files for namespace TASK
+ files for namespace TASK
+</PRE>
