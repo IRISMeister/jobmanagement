@@ -13,11 +13,7 @@
 			"path": "task"
 		}
 	],
-		"settings": {
-		"files.exclude": {
-		  "job": true,
-		  "task": true
-		},
-		"objectscript.conn.active": false,
+	"settings": {
+		"objectscript.conn.active": false
 	}
 }
