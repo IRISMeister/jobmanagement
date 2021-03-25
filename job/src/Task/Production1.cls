@@ -69,14 +69,14 @@ XData ProductionDefinition
   <Item Name="Test.Service.Call" Category="" ClassName="Test.Service.Call" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="FileWatcher" Category="" ClassName="Task.Service.FileWatcher" PoolSize="1" Enabled="false" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
-    <Setting Target="Adapter" Name="FilePath">/home/irisowner/paltac/in/</Setting>
+    <Setting Target="Adapter" Name="FilePath">/home/irisowner/filewatcher/in/</Setting>
     <Setting Target="Adapter" Name="FileSpec">*.txt</Setting>
-    <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/paltac/arc/</Setting>
+    <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/filewatcher/arc/</Setting>
   </Item>
   <Item Name="EnsLib.File.PassthroughService" Category="" ClassName="EnsLib.File.PassthroughService" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
     <Setting Target="Host" Name="TargetConfigNames">File</Setting>
-    <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/paltac/arc/</Setting>
-    <Setting Target="Adapter" Name="FilePath">/home/irisowner/paltac/in/</Setting>
+    <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/filewatcher/arc/</Setting>
+    <Setting Target="Adapter" Name="FilePath">/home/irisowner/filewatcher/in/</Setting>
     <Setting Target="Adapter" Name="FileSpec">*.txt</Setting>
   </Item>
   <Item Name="EnsLib.FTP.PassthroughOperation" Category="" ClassName="EnsLib.FTP.PassthroughOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">

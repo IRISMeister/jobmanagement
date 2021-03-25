@@ -24,7 +24,7 @@ RUN  iris start $ISC_PACKAGE_INSTANCENAME \
 
 #++ until imageBuildSteps.sh is chnaged++
 # imageBuildSteps makes appuser 'ForceChangePassword' state....
-RUN mkdir -p paltac/in && mkdir -p paltac/arc && iris start $ISC_PACKAGE_INSTANCENAME nostu quietly \
+RUN mkdir -p filewatcher/in && mkdir -p filewatcher/arc && iris start $ISC_PACKAGE_INSTANCENAME nostu quietly \
  && printf "kill ^%%SYS(\"JOURNAL\") kill ^SYS(\"NODE\") h\n" | iris session $ISC_PACKAGE_INSTANCENAME -B | cat \
  && iris stop $ISC_PACKAGE_INSTANCENAME quietly bypass \
  && rm -f $ISC_PACKAGE_INSTALLDIR/mgr/journal.log \
