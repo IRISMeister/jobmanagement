@@ -5,6 +5,3 @@ routines=32
 [SQL]
 TimePrecision=6
 SaveMAC=1
-
-[SqlSysDatatypes]
-TIMESTAMP=%Library.PosixTime

@@ -2,15 +2,13 @@ version: '3.7'
 services: 
   job: 
     build: ../job
-    init: true
+    command: --ISCAgent false --monitorCPF false
     ports:
       - 9203:52773
       - 9103:1972
     environment:
       - TZ=JST-9
       - ISC_CPF_MERGE_FILE=/ISC/merge.cpf
-    cap_add:
-    - CAP_IPC_LOCK    
     volumes:
       - ./:/ISC     
     networks:
@@ -18,15 +16,13 @@ services:
       
   task: 
     build: ../task
-    init: true
+    command: --ISCAgent false --monitorCPF false
     ports:
       - 9204:52773
       - 9104:1972
     environment:
       - TZ=JST-9
       - ISC_CPF_MERGE_FILE=/ISC/merge.cpf
-    cap_add:
-    - CAP_IPC_LOCK    
     volumes:
       - ./:/ISC     
     networks:
@@ -34,15 +30,13 @@ services:
 
   task2: 
     build: ../task
-    init: true
+    command: --ISCAgent false --monitorCPF false
     ports:
       - 9205:52773
       - 9105:1972
     environment:
       - TZ=JST-9
       - ISC_CPF_MERGE_FILE=/ISC/merge.cpf
-    cap_add:
-    - CAP_IPC_LOCK    
     volumes:
       - ./:/ISC     
     networks:

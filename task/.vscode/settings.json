@@ -1,10 +1,17 @@
 {
-    "objectscript.conn": {
-      "active": true,
-      "host": "localhost",
-      "port": 9204,
-      "username": "SuperUser",
-      "password": "SYS",
-      "ns": "TASK"
-    },
+  "intersystems.servers": {   
+      "iris-task": {
+          "webServer": {
+              "scheme": "http",
+              "host": "localhost",
+              "port": 9204
+          },
+          "username": "SuperUser"
+      }
+  },
+  "objectscript.conn": {
+    "active": true,
+    "server": "iris-task",
+    "ns": "TASK"
   }
+}

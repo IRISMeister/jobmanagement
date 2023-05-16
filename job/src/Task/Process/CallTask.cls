@@ -73,7 +73,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </false>
 </if>
 <alert value='context.TaskErrorMessage' xpos='335' ypos='1050' disabled="true">
-<annotation><![CDATA[Alertはエラー発生源発行させるので無効化]]></annotation>
+<annotation><![CDATA[Alertはエラー発生源で発行させるので無効化]]></annotation>
 </alert>
 <call name='WF Ask Operator' target='Operator' async='1' xpos='335' ypos='1150' >
 <request type='EnsLib.Workflow.TaskRequest' >

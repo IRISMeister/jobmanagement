@@ -41,11 +41,13 @@ XData ProductionDefinition
   </Item>
   <Item Name="Job2a" Category="job" ClassName="Task.Process.Job2a" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="Job2b" Category="" ClassName="Task.Process.Job2b" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="Job2b" Category="job" ClassName="Task.Process.Job2b" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="Job2" Category="" ClassName="Task.Process.Job2" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+  <Item Name="Job2" Category="job" ClassName="Task.Process.Job2" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
   </Item>
-  <Item Name="Job3" Category="" ClassName="Task.Process.Job3" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+  <Item Name="Job3" Category="job" ClassName="Task.Process.Job3" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+  </Item>
+  <Item Name="Job4" Category="job" ClassName="Task.Process.Job4" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="Target1" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="Credentials">default</Setting>
@@ -93,8 +95,6 @@ XData ProductionDefinition
   <Item Name="EnsLib.EMail.AlertOperation" Category="" ClassName="EnsLib.EMail.AlertOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="Timer" Category="" ClassName="Task.Service.Timer" PoolSize="1" Enabled="false" Foreground="false" Comment="定期的な時間間隔で起動するサービス" LogTraceEvents="false" Schedule="@test">
-  </Item>
-  <Item Name="Job4" Category="" ClassName="Task.Process.Job4" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
 </Production>
 }
