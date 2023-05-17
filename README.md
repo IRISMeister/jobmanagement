@@ -51,9 +51,9 @@ CallTask->>-Job1: Response
 Job1->>-Initiator: Response
 ```
 
-[タスクマネージャー](http://localhost:9203/csp/sys/op/%25CSP.UI.Portal.TaskInfo.zen?$ID1=1000)が、[Initiator](job/src/Task/Service/Initiator.cls)を呼び出す[ユーザ定義のタスク](job/src/SysTask/Job1.cls) を5分ごとに起動します。Initiatorは、[BP/Job1](http://localhost:9203/csp/job/EnsPortal.BPLEditor.zen?BP=Task.Process.Job1.bpl)を起動し、さらにBO/target1, BO/target2を呼び出していることが確認できます。  
+[タスクマネージャー](http://localhost:9203/csp/sys/op/%25CSP.UI.Portal.TaskInfo.zen?$ID1=1000)が、[Initiator](job/src/Task/Service/Initiator.cls)を呼び出す[ユーザ定義のタスク](job/src/SysTask/Job1.cls) を5分ごとに起動します。Initiatorは、[BP/Job1](http://localhost:9203/csp/job/EnsPortal.BPLEditor.zen?BP=Task.Process.Job1.bpl)をCallTask経由で起動し、さらにBO/target1, BO/target2を呼び出しています。  
 
-BO/Target1はRESTクライアントを使用して、IRISサーバ#1のRESTサービスを起動します。 その結果、IRISサーバ#1では[MyTask.NewClass1](task/src/MyTask/NewClass1.cls)と[MyTask.NewClass2](task/src/MyTask/NewClass2.cls)が、各々実行されます。  
+BO/Target1はRESTクライアントを使用して、IRISサーバ#1のRESTサービスを起動します。 その結果、IRISサーバ#1では[MyTask.NewClass1](task/src/MyTask/NewClass1.cls)と[MyTask.NewClass2](task/src/MyTask/NewClass2.cls)が、各々実行されます。その動作結果はグローバルに保存されています。 
 ```
 $ docker-compose exec task iris session iris -U task
 ^MyTask=10
@@ -70,7 +70,7 @@ $ docker-compose exec task iris session iris -U task
 TASK>h
 ```
 
-BO/Target2はRESTクライアントを使用して、IRISサーバ#2のRESTサービスを起動します。 その結果、IRISサーバ#2では[MyTask.NewClass3](task/src/MyTask/NewClass3.cls)が、各々実行されます。  
+BO/Target2はRESTクライアントを使用して、IRISサーバ#2のRESTサービスを起動します。 その結果、IRISサーバ#2では[MyTask.NewClass3](task/src/MyTask/NewClass3.cls)が、各々実行されます。その動作結果はグローバルに保存されています。 
 
 ```
 $ docker-compose exec task2 iris session iris -U task
@@ -85,43 +85,51 @@ TASK>zw ^MyTask
 
 手動でその他のパターンを実行出来ます。
 ```
-$ docker-compose exec job iris session iris -U job test1   (Job1)
-$ docker-compose exec job iris session iris -U job test2   (Job2)
-$ docker-compose exec job iris session iris -U job test3   (Job3)
-$ docker-compose exec job iris session iris -U job test4   (Job4, ワークフローが介在します)
+$ docker-compose exec job iris session iris -U job test1   (BP/Job1)
+$ docker-compose exec job iris session iris -U job test2   (BP/Job2)
+$ docker-compose exec job iris session iris -U job test3   (BP/Job3)
+$ docker-compose exec job iris session iris -U job test4   (BP/Job4)
+$ docker-compose exec job iris session iris -U job error1  (BP/Job1)
 ```
 
-To try workflow engine, run the following command.  It forces devision by zero error in MyTask.NewTask2.cls and triggers workflow engine.  This command will be blocked until you perform workflow actions in Analytics/user portal while logging into as _SYSTEM user.
-```
-$ docker-compose exec job iris session iris -U job error1
-```
-Typical action would be 'Accept' and 'Abort', which aborts the blocked BP.  Then you will receive something like this.
+test4はワークフローが介在します。そのため処理は[ユーザポータル](http://localhost:9203/csp/job/_DeepSee.UserPortal.Home.zen)にて、人による何らかのアクションがとられるまで保留されます。
+![](images/wf1.png)
+ワークフロー受信箱に届いているメッセージを選択し、その保留状態を解除すれば、処理が再開します。
+
+error1を使用すると、疑似的にアプリケーションレベルのエラーを発生させることができます。Job1経由で実行されるMyTask.NewTask2.cls内で強制的にゼロ除算エラーを発生させます。そのため処理は[ユーザポータル](http://localhost:9203/csp/job/_DeepSee.UserPortal.Home.zen)にて、人による何らかのアクションがとられるまで保留されます。
+![](images/wf2.png)
+ワークフロー受信箱に届いているメッセージを選択し、対処方法を指示すれば、処理が再開します。
+![](images/up.png)
+
+対処には、再実行(エラーが発生したコールから再実行する)、継続(エラーを無視して継続する)、中止(残りの処理の実行を中止する)があります。
+
+> 今回のゼロ除算エラーは何度実行しても発生するので、「継続」を選択します。これで先ほど保留されていたBPが再開し、次の処理(BO/Target2の呼び出し)に進み、端末に結果が表示されます。
+
 ```
 output=6@Task.Response.CallJob  ; <OREF>
 +----------------- general information ---------------
 |      oref value: 6
 |      class name: Task.Response.CallJob
-|           %%OID: $lb("221","Task.Response.CallJob")
+|           %%OID: $lb("289","Task.Response.CallJob")
 | reference count: 2
 +----------------- attribute values ------------------
 |       %Concurrency = 1  <Set>
-|            EndTime = "2020-12-01 16:28:55"
-|    JobErrorMessage = "<Ens>ErrBPLThrownFault:TaskFault"
-|          JobStatus = "NG"
-|          StartTime = "2020-12-01 16:24:10"
+|            EndTime = "2023-05-17 16:21:21"
+|    JobErrorMessage = ""
+|          JobStatus = "OK"
+|          StartTime = "2023-05-17 16:09:59"
 +-----------------------------------------------------
 $
 ```
 
-## How to edit with VSCode
-Select "Open Workspace..." and open jobmanagement.code-workspace file.  
-It uses workspace to handle two IRIS namespaces and connections.
-You will see three folders.  
-<PRE>
-main 
- docker-compose file. Merge cpf file.
-job
- files for namespace JOB
-task
- files for namespace TASK
-</PRE>
+特定のIRISサーバを停止することで、システムレベルの障害を発生させることが出来ます。
+```
+$ docker-compose exec task iris stop iris quietly
+```
+この場合、所定の回数リトライ後にBOがタイムアウトを起こし、[管理アラート](http://localhost:9203/csp/job/EnsPortal.ManagedAlerts.zen?$NAMESPACE=JOB&$NAMESPACE=JOB&)が発生します。
+
+> 対処内容に応じて適宜、内容を更新することを想定した機能です。
+
+![](images/alert1.png)
+
+BPの処理については、先ほどと同様に、ユーザポータルでワークフロー受信箱に届いているメッセージを選択し、対処方法を指示すれば、処理が再開します。
