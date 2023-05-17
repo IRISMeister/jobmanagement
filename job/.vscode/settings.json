@@ -6,7 +6,8 @@
                 "host": "localhost",
                 "port": 9203
             },
-            "username": "SuperUser"
+            "username": "SuperUser",
+            "password": "SYS"
         }
     },
     "objectscript.conn": {
