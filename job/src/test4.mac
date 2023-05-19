@@ -1,5 +1,8 @@
 ROUTINE test4
 main(p1="abc",halttime=0) public {
+	;
+	Write "You need to open WF and accept it to proceed.",!
+	;
 	Set tSC = ##class(Ens.Director).CreateBusinessService("Initiator",.tService)
 	If ($IsObject(tService)) {
 		Set input=##class(Task.Request.CallJob).%New()

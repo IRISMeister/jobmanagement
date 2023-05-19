@@ -49,7 +49,7 @@ XData ProductionDefinition
   </Item>
   <Item Name="Job4" Category="job" ClassName="Task.Process.Job4" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="Target1" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+  <Item Name="Target1" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="2" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="Credentials">default</Setting>
     <Setting Target="Adapter" Name="HTTPPort">52773</Setting>
     <Setting Target="Adapter" Name="HTTPServer">task</Setting>
@@ -59,7 +59,7 @@ XData ProductionDefinition
   </Item>
   <Item Name="TaskComplete" Category="" ClassName="Task.Service.TaskCompleteRest" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="Target2" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+  <Item Name="Target2" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="2" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="Credentials">default</Setting>
     <Setting Target="Adapter" Name="HTTPPort">52773</Setting>
     <Setting Target="Adapter" Name="HTTPServer">task2</Setting>

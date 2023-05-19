@@ -1,6 +1,8 @@
 ROUTINE test3
 main(p1="abc",halttime=0) public {
 	;
+	Write "Will take at least 5 seconds.",!
+	; 
 	Set tSC = ##class(Ens.Director).CreateBusinessService("Initiator",.tService)
 	If ($IsObject(tService)) {
 		;Set input = ##class(Ens.StringRequest).%New()
