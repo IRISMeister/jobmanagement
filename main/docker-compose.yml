@@ -4,7 +4,7 @@ services:
     build: ../job
     command: --ISCAgent false --monitorCPF false
     ports:
-      - 9203:52773
+      - 52873:52773
       - 9103:1972
     environment:
       - TZ=JST-9
@@ -18,7 +18,7 @@ services:
     build: ../task
     command: --ISCAgent false --monitorCPF false
     ports:
-      - 9204:52773
+      - 52874:52773
       - 9104:1972
     environment:
       - TZ=JST-9
