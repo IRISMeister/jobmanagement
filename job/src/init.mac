@@ -110,12 +110,13 @@ SetupEnv(Namespace="job") public {
 	Set task.StartDate = +$H
 	Set tSC = task.%Save()	
 	w "Register Task:",tSC,!
-	/*
+}
+WSClient() public {
 	#; Generate W/S clients
 	Set user="SuperUser"
-	Set pass="sys"
+	Set pass="SYS"
 	Set port=52773
-	Set server="http://localhost:"_port_"/csp/task"
+	Set server="http://task:"_port_"/csp/task"
 	
 	Set r=##class(%SOAP.WSDL.Reader).%New()
 	Set r.ClientPackage="WSClient"
@@ -123,6 +124,4 @@ SetupEnv(Namespace="job") public {
 	Set url=server_"/Task.WS.Main.cls?WSDL=1&IRISUserName="_user_"&IRISPassword="_pass
 	Set tSC=r.Process(url)
 	If $$$ISERR(tSC) { b }
-	*/
-
 }

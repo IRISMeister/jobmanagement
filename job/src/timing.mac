@@ -13,9 +13,10 @@ measure(loop=1000) public {
 }
 
 callws(loop=0) public {
+	#; 事前にJOB>d WSClient^init を実行してWebService Clientを作成しておくこと。
 	Set wsc=##class(WSClient.MainSoap).%New()
 	Set user="_SYSTEM"
-	Set pwd="sys" 
+	Set pwd="SYS" 
 	Set utoken=##class(%SOAP.Security.UsernameToken).Create(user,pwd)
 	Do wsc.SecurityOut.AddSecurityElement(utoken)
 	Set wsc.Timeout=660
