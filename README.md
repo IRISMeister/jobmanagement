@@ -111,8 +111,8 @@ CallTask->>+Target2: Invoke Task3
 Target2->>+Task@Target2:REST Req
 Task@Target2-->>Target2:REST Resp
 
-Task@Target2->>-TaskComplete:REST Req(Deffered)
-TaskComplete->>Target2:Deffered Resp
+Task@Target2->>-TaskComplete:REST Req(Token)
+TaskComplete->>Target2:Deffered Resp(Token)
 
 Target2->>-CallTask: Response
 CallTask->>-Job1: Response
