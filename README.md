@@ -48,49 +48,51 @@ BO/Target2はRESTクライアントを使用して、IRISサーバ#2のRESTサ�
 ```mermaid
 sequenceDiagram
 
-participant TaskComplete
-participant Initiator
-participant Job1
-participant CallTask
-participant Target1
-participant Target2
+participant RS/TaskComplete
+participant BS/Initiator
+participant BP/Job1
+participant BP/CallTask
+participant BO/Target1
+participant BO/Target2
 
-Initiator->>+Job1: Request
+BS/Initiator->>+BP/Job1: Request
 
-Job1->>+CallTask: Task1@Target1
+BP/Job1->>+BP/CallTask: Task1@BO/Target1
 
-CallTask->>+Target1: invoke Task1
+BP/CallTask->>+BO/Target1: invoke Task1
 
-Target1->>+Task@Target1:REST Req
-Task@Target1-->>-Target1:REST Resp
+BO/Target1->>+Task@BO/Target1:REST Req
+Task@BO/Target1-->>-BO/Target1:REST Resp
 
 
-Target1->>-CallTask: Response
-CallTask->>-Job1: Response
+BO/Target1->>-BP/CallTask: Response
+BP/CallTask->>-BP/Job1: Response
 
-Job1->>+CallTask: Task2@Target1
-CallTask->>+Target1: invoke Task2
+BP/Job1->>+BP/CallTask: Task2@BO/Target1
+BP/CallTask->>+BO/Target1: invoke Task2
 
-Target1->>+Task@Target1:REST Req
-Task@Target1-->>-Target1:REST Resp
+BO/Target1->>+Task@Target1:REST Req
+Task@Target1-->>-BO/Target1:REST Resp
 
-Target1->>-CallTask: Response
-CallTask->>-Job1: Response
+BO/Target1->>-BP/CallTask: Response
+BP/CallTask->>-BP/Job1: Response
 
-Job1->>+CallTask: Task3@Target2
+BP/Job1->>+BP/CallTask: Task3@BO/Target2
 
-CallTask->>+Target2: Invoke Task3
+BP/CallTask->>+BO/Target2: Invoke Task3
 
-Target2->>+Task@Target2:REST Req
-Task@Target2-->>Target2:REST Resp
+BO/Target2->>+Task@Target2:REST Req
+Task@Target2-->>BO/Target2:REST Resp
 
-Task@Target2->>-TaskComplete:REST Req(Token)
-TaskComplete->>Target2:Deffered Resp(Token)
+BO/Target2-->>-BP/CallTask:Resp(Deffered)
 
-Target2->>-CallTask: Response
-CallTask->>-Job1: Response
+Task@Target2->>-RS/TaskComplete:REST Req(Token)
+RS/TaskComplete->>BP/CallTask:Deffered Resp(Token)
 
-Job1->>-Initiator: Response
+BP/CallTask->>-BP/Job1: Response
+
+BP/Job1->>-BS/Initiator: Response
+
 ```
 
 ### 処理結果
