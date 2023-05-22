@@ -11,7 +11,7 @@ Storage Default
 XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 {
 <process language='objectscript' request='Task.Request.CallJob' response='Task.Response.CallJob' contextsuperclass='Task.Context.Custom' height='2700' width='2000' >
-<sequence xend='200' yend='2650' >
+<sequence xend='200' yend='2450' >
 <assign property="response.StartTime" value="$ZDATETIME($H,3)" action="set" xpos='200' ypos='250' disabled="true">
 <annotation><![CDATA[タイムスタンプをメッセージに記録]]></annotation>
 </assign>
@@ -22,9 +22,10 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <annotation><![CDATA[Customコードの例。無効化してある上記のassignと同等の機能をコードで実現したもの。]]></annotation>
 <![CDATA[ Do context.OnStart(request,response)]]>
 </code>
-<scope xpos='200' ypos='550' xend='200' yend='2450' >
+<scope xpos='200' ypos='550' xend='200' yend='2250' >
 <call name='task1' target='CallTask' async='0' xpos='200' ypos='650' >
-<annotation><![CDATA[タスクを同期で実行。]]></annotation>
+<annotation><![CDATA[NewClass1@Target1,同期
+]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
 <assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
@@ -51,8 +52,9 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </throw>
 </false>
 </if>
-<call name='task2' target='CallTask' async='0' xpos='200' ypos='1300' >
-<annotation><![CDATA[タスクを同期で実行。]]></annotation>
+<call name='task2' target='CallTask' async='0' xpos='200' ypos='1100' >
+<annotation><![CDATA[NewClass2@Target2,同期
+]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
 <assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
@@ -71,13 +73,13 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <assign property="context.R3" value="callresponse.R3" action="set" />
 </response>
 </call>
-<if condition='context.LastTaskStatus="OK"' xpos='200' ypos='1400' xend='200' yend='1650' >
+<if condition='context.LastTaskStatus="OK"' xpos='200' ypos='1200' xend='200' yend='1450' >
 <false>
-<throw fault='"TaskFault"' xpos='335' ypos='1550' />
+<throw fault='"TaskFault"' xpos='335' ypos='1350' />
 </false>
 </if>
-<call name='task3' target='CallTask' async='0' xpos='200' ypos='1750' >
-<annotation><![CDATA[タスクを同期+遅延実行で実行。]]></annotation>
+<call name='task3' target='CallTask' async='0' xpos='200' ypos='1550' >
+<annotation><![CDATA[NewClass3@Target2,同期+遅延]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
 <assign property="callrequest.Target" value="&quot;Target2&quot;" action="set" />
@@ -97,16 +99,16 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <assign property="context.R3" value="callresponse.R3" action="set" />
 </response>
 </call>
-<if condition='context.LastTaskStatus="OK"' xpos='200' ypos='1850' xend='200' yend='2100' >
+<if condition='context.LastTaskStatus="OK"' xpos='200' ypos='1650' xend='200' yend='1900' >
 <false>
-<throw fault='"TaskFault"' xpos='335' ypos='2000' />
+<throw fault='"TaskFault"' xpos='335' ypos='1800' />
 </false>
 </if>
-<assign property="response.JobStatus" value="&quot;OK&quot;" action="set" xpos='200' ypos='2200' >
+<assign property="response.JobStatus" value="&quot;OK&quot;" action="set" xpos='200' ypos='2000' >
 <annotation><![CDATA[ジョブの実行結果をOKに設定]]></annotation>
 </assign>
 <faulthandlers>
-<catchall xpos='200' ypos='2300' xend='200' yend='550' >
+<catchall xpos='200' ypos='2100' xend='200' yend='550' >
 <annotation><![CDATA[例外をキャッチする箇所。ジョブの実行結果をNGに設定している。]]></annotation>
 <trace value='"%LastError "_$System.Status.GetErrorCodes(..%Context.%LastError)_" : "_$System.Status.GetOneStatusText(..%Context.%LastError)' xpos='200' ypos='250' />
 <assign property="response.JobStatus" value="&quot;NG&quot;" action="set" xpos='200' ypos='350' />
@@ -114,7 +116,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </catchall>
 </faulthandlers>
 </scope>
-<assign property="response.EndTime" value="$ZDATETIME($H,3)" action="set" xpos='200' ypos='2550' >
+<assign property="response.EndTime" value="$ZDATETIME($H,3)" action="set" xpos='200' ypos='2350' >
 <annotation><![CDATA[タイムスタンプをメッセージに記録]]></annotation>
 </assign>
 </sequence>

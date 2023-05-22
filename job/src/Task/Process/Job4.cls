@@ -21,7 +21,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </code>
 <scope xpos='200' ypos='350' xend='200' yend='1700' >
 <call name='task1' target='CallTask' async='0' xpos='200' ypos='450' >
-<annotation><![CDATA[タスクを同期で実行。]]></annotation>
+<annotation><![CDATA[NewClass1@Target1,同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
 <assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
@@ -64,7 +64,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <sync name='sync' calls='WF Ask Operator' type='all' xpos='200' ypos='350' />
 </sequence>
 <call name='task2' target='CallTask' async='0' xpos='200' ypos='1000' >
-<annotation><![CDATA[タスクを同期で実行。]]></annotation>
+<annotation><![CDATA[NewClass2@Target1,同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
 <assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />

@@ -18,7 +18,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </code>
 <scope xpos='200' ypos='350' xend='200' yend='1550' >
 <call name='task1' target='CallTask' async='1' xpos='200' ypos='450' >
-<annotation><![CDATA[タスクを非同期で実行。]]></annotation>
+<annotation><![CDATA[SlowTask@Target1,非同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
 <assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
@@ -38,7 +38,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </response>
 </call>
 <call name='task2' target='CallTask' async='1' xpos='200' ypos='550' >
-<annotation><![CDATA[タスクを非同期で実行。]]></annotation>
+<annotation><![CDATA[FastTask@Target1,非同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
 <assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
@@ -69,7 +69,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </if>
 </foreach>
 <call name='task3' target='CallTask' async='0' xpos='200' ypos='850' >
-<annotation><![CDATA[タスクを同期で実行。]]></annotation>
+<annotation><![CDATA[NewClass1@Target1,同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
 <assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
@@ -100,7 +100,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <annotation><![CDATA[ジョブの実行結果をOKに設定]]></annotation>
 </assign>
 <faulthandlers>
-<catchall xpos='200' ypos='1400' xend='200' yend='450' >
+<catchall xpos='200' ypos='1400' xend='200' yend='550' >
 <annotation><![CDATA[例外をキャッチする箇所。ジョブの実行結果をNGに設定している。]]></annotation>
 <trace value='"%LastError "_$System.Status.GetErrorCodes(..%Context.%LastError)_" : "_$System.Status.GetOneStatusText(..%Context.%LastError)' xpos='200' ypos='250' />
 <assign property="response.JobStatus" value="&quot;NG&quot;" action="set" xpos='200' ypos='350' />

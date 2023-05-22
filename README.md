@@ -34,7 +34,7 @@ $ docker compose down
 
 ### 起動方法
 
-[JOB1]((job/src/SysTask/Job1.cls)は、コンテナ起動直後より[タスクマネージャ](http://localhost:9203/csp/sys/op/%25CSP.UI.Portal.TaskInfo.zen?$ID1=1000)->[BP/Initiator](job/src/Task/Service/Initiator.cls)経由で5分間隔で自動実行されています。
+[JOB1](job/src/SysTask/Job1.cls)は、コンテナ起動直後より[タスクマネージャ](http://localhost:9203/csp/sys/op/%25CSP.UI.Portal.TaskInfo.zen?$ID1=1000)->[BP/Initiator](job/src/Task/Service/Initiator.cls)経由で5分間隔で自動実行されています。
 
 ### 処理内容
 
@@ -74,20 +74,46 @@ TASK>zw ^MyTask
 
 ```mermaid
 sequenceDiagram
+
+participant TaskComplete
+participant Initiator
+participant Job1
+participant CallTask
+participant Target1
+participant Target2
+
 Initiator->>+Job1: Request
 
 Job1->>+CallTask: Task1@Target1
+
 CallTask->>+Target1: invoke Task1
+
+Target1->>+Task@Target1:REST Req
+Task@Target1-->>-Target1:REST Resp
+
+
 Target1->>-CallTask: Response
 CallTask->>-Job1: Response
 
 Job1->>+CallTask: Task2@Target1
 CallTask->>+Target1: invoke Task2
+
+Target1->>+Task@Target1:REST Req
+Task@Target1-->>-Target1:REST Resp
+
 Target1->>-CallTask: Response
 CallTask->>-Job1: Response
 
 Job1->>+CallTask: Task3@Target2
-CallTask->>+Target2: Task3@Target2
+
+CallTask->>+Target2: Invoke Task3
+
+Target2->>+Task@Target2:REST Req
+Task@Target2-->>Target2:REST Resp
+
+Task@Target2->>-TaskComplete:REST Req(Deffered)
+TaskComplete->>Target2:Deffered Resp
+
 Target2->>-CallTask: Response
 CallTask->>-Job1: Response
 
@@ -108,10 +134,10 @@ $ docker compose exec job iris session iris -U job job2   (BP/Job2)
 
 BP/job2aを非同期呼び出し後、指定された時間("PT5S", 5秒)だけBPを停止、その後,BP/job2bを非同期実行し、双方の完了を待つ。双方が正常終了した場合にのみ、task1(ターゲット:target1,MyTask.NewClass1)を起動する。  
 
-BP/job2aはtask1(ターゲット:target1,MyTask.SlowTask)を実行。  
+BP/job2aはtask1(ターゲット:target1,MyTask.SlowTask)を実行します。  
 > MyTask.SlowTaskは10秒間sleepして、時間がかかる処理を再現しています。
 
-BP/job2bはtask1(ターゲット:target1,MyTask.FastTask)を実行。  
+BP/job2bはtask1(ターゲット:target1,MyTask.FastTask)を実行します。  
 
 下記のトレースにおいて、Job2->Job2aへのCallへの応答はその10秒後になっている(SlowTaskが10秒かかるため)こと、Job2->Job2bへのCall発生はJob2aへのコールの5秒後(PT5Sの指定による)となっていること(その応答は即時になっている)、Job2->CallTaskへのCallは、双方が完了した後となっていることが確認出来ます。
 

@@ -17,7 +17,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </code>
 <scope xpos='200' ypos='350' xend='200' yend='1750' >
 <call name='job2a' target='Job2a' async='1' xpos='200' ypos='450' >
-<annotation><![CDATA[job2aを非同期で実行]]></annotation>
+<annotation><![CDATA[job2a,非同期]]></annotation>
 <request type='Task.Request.CallJob' >
 <assign property="callrequest" value="request" action="set" />
 </request>
@@ -30,7 +30,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <annotation><![CDATA[待ち実行。実際には、Contextクラスにメソッドを定義して、そこから取得するほうが実用的。]]></annotation>
 </delay>
 <call name='job2b' target='Job2b' async='1' xpos='200' ypos='750' >
-<annotation><![CDATA[job2bを非同期で実行]]></annotation>
+<annotation><![CDATA[job2b,非同期]]></annotation>
 <request type='Task.Request.CallJob' >
 <assign property="callrequest" value="request" action="set" />
 </request>
@@ -48,7 +48,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </if>
 </foreach>
 <call name='task1' target='CallTask' async='0' xpos='200' ypos='1050' >
-<annotation><![CDATA[タスクを同期で実行。以下、任意の数のタスクを記述可能。]]></annotation>
+<annotation><![CDATA[NewClass1@Target1,同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
 <assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
