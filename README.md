@@ -44,33 +44,6 @@ BO/Target1はRESTクライアントを使用して、IRISサーバ#1のRESTサ�
 
 BO/Target2はRESTクライアントを使用して、IRISサーバ#2のRESTサービスを起動します。 その結果、IRISサーバ#2では[MyTask.NewClass3](task/src/MyTask/NewClass3.cls)が実行されます。その動作結果はグローバルに保存されます。 
 
-### 処理結果
-
-その結果、IRISサーバ#1(コンテナ task)上には、下記の2個(JOB1は5分ごとに自動起動されるので、時間経過とともに数は増えます)のグローバルが保存される。
-
-```
-docker compose exec task iris session iris -UTASK
-TASK>zw ^MyTask
-^MyTask=6
-^MyTask(1)=$lb("05/22/2023 13:35:00","MyTask.NewClass1","1","abc",5,"","","")
-^MyTask(2)=$lb("05/22/2023 13:35:05","MyTask.NewClass2",1,"abc",5,"","","")
-^MyTask(3)=$lb("05/22/2023 13:40:00","MyTask.NewClass1","18","abc",5,"","","")
-^MyTask(4)=$lb("05/22/2023 13:40:05","MyTask.NewClass2",18,"abc",5,"","","")
-^MyTask(5)=$lb("05/22/2023 13:45:00","MyTask.NewClass1","35","abc",5,"","","")
-^MyTask(6)=$lb("05/22/2023 13:45:05","MyTask.NewClass2",35,"abc",5,"","","")
-```
-
-その結果、IRISサーバ#2(コンテナ task2)上には、下記の1個(JOB1は5分ごとに自動起動されるので、時間経過とともに数は増えます)のグローバルが保存される。
-```
-docker compose exec task2 iris session iris -UTASK
-
-TASK>zw ^MyTask
-^MyTask=3
-^MyTask(1)=$lb("05/22/2023 13:35:05","MyTask.NewClass3",1,"abc",5,"","","")
-^MyTask(2)=$lb("05/22/2023 13:40:05","MyTask.NewClass3",18,"abc",5,"","","")
-^MyTask(3)=$lb("05/22/2023 13:45:05","MyTask.NewClass3",35,"abc",5,"","","")
-```
-
 
 ```mermaid
 sequenceDiagram
@@ -118,6 +91,33 @@ Target2->>-CallTask: Response
 CallTask->>-Job1: Response
 
 Job1->>-Initiator: Response
+```
+
+### 処理結果
+
+その結果、IRISサーバ#1(コンテナ task)上には、下記の2個(JOB1は5分ごとに自動起動されるので、時間経過とともに数は増えます)のグローバルが保存される。
+
+```
+docker compose exec task iris session iris -UTASK
+TASK>zw ^MyTask
+^MyTask=6
+^MyTask(1)=$lb("05/22/2023 13:35:00","MyTask.NewClass1","1","abc",5,"","","")
+^MyTask(2)=$lb("05/22/2023 13:35:05","MyTask.NewClass2",1,"abc",5,"","","")
+^MyTask(3)=$lb("05/22/2023 13:40:00","MyTask.NewClass1","18","abc",5,"","","")
+^MyTask(4)=$lb("05/22/2023 13:40:05","MyTask.NewClass2",18,"abc",5,"","","")
+^MyTask(5)=$lb("05/22/2023 13:45:00","MyTask.NewClass1","35","abc",5,"","","")
+^MyTask(6)=$lb("05/22/2023 13:45:05","MyTask.NewClass2",35,"abc",5,"","","")
+```
+
+その結果、IRISサーバ#2(コンテナ task2)上には、下記の1個(JOB1は5分ごとに自動起動されるので、時間経過とともに数は増えます)のグローバルが保存される。
+```
+docker compose exec task2 iris session iris -UTASK
+
+TASK>zw ^MyTask
+^MyTask=3
+^MyTask(1)=$lb("05/22/2023 13:35:05","MyTask.NewClass3",1,"abc",5,"","","")
+^MyTask(2)=$lb("05/22/2023 13:40:05","MyTask.NewClass3",18,"abc",5,"","","")
+^MyTask(3)=$lb("05/22/2023 13:45:05","MyTask.NewClass3",35,"abc",5,"","","")
 ```
 
 ## JOB2
