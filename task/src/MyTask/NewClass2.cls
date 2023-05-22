@@ -5,7 +5,7 @@ Method Task(SessionId As %String = "", P1 As %String = "", P2 As %String = "", P
 {
 	Set tSC=##super(SessionId, P1, P2, P3, P4, P5,.R1,.R2,.R3)
 
-	#;デバッグ用。P1="E"の場合、例外を発生させる。
+	#;実験用。P1="E"の場合、例外を発生させる。
 	If P1="E" { Set a=3/0 } // trigger error
 
 	Return tSC

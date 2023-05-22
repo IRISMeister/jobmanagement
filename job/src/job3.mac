@@ -1,12 +1,13 @@
-ROUTINE test4
+ROUTINE job3
 main(p1="abc",halttime=0) public {
 	;
-	Write "You need to open WF and accept it to proceed.",!
-	;
+	Write "Will take at least 10 seconds.",!
+	; 
 	Set tSC = ##class(Ens.Director).CreateBusinessService("Initiator",.tService)
 	If ($IsObject(tService)) {
+		;Set input = ##class(Ens.StringRequest).%New()
 		Set input=##class(Task.Request.CallJob).%New()
-		Set input.JobName="Job4"
+		Set input.JobName="Job3"
 		Set input.P1=p1
 		Set input.P2=halttime
 		Set tSC = tService.ProcessInput(input,.output)

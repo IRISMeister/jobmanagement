@@ -1,13 +1,15 @@
-ROUTINE test2
+ROUTINE job1
+#; D ^test
+#; D test^test("E")  ; MyTask.NewClass2でエラーを発生させる。
 main(p1="abc",halttime=0) public {
-	;
-	Write "Will take at least 5 seconds.",!
+	;実行結果は 
+	; select * from Task_Response.CallTask
+	; select * from Task_Response.CallJob
 	;
 	Set tSC = ##class(Ens.Director).CreateBusinessService("Initiator",.tService)
 	If ($IsObject(tService)) {
-		;Set input = ##class(Ens.StringRequest).%New()
 		Set input=##class(Task.Request.CallJob).%New()
-		Set input.JobName="Job2"
+		Set input.JobName="Job1"
 		Set input.P1=p1
 		Set input.P2=halttime
 		Set tSC = tService.ProcessInput(input,.output)
