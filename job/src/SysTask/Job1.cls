@@ -19,7 +19,7 @@ Method OnTask() As %Status
 			Set input=##class(Task.Request.CallJob).%New()
 			Set input.JobName=..JobName   //"Job1"
 			Set input.P1=..P1             //"abc"
-			Set input.P2=$G(^SysTask.Job1,5)
+			Set input.P2=$G(^SysTask.Job1,0)
 			Set tSC = tService.ProcessInput(input,.output)
 			Set ^SysTaskLog(seq,2)=$ZDATETIME($H)_"/"_$JOB_"/"_tService.%SessionId
 		}
