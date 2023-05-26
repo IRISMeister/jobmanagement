@@ -19,7 +19,7 @@ ROUTINE callscp
 		set i=$ORDER(files(i))
 	}
 	
-	Set tSC=sftp.Get("in.txt","C:\enstest\filewatcher\in\in.txt")
+	Set tSC=sftp.Get("in.txt","C:\enstest\incoming\in\in.txt")
 	If $$$ISERR(tSC) zw tSC
  
 

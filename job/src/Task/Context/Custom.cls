@@ -26,6 +26,15 @@ Method OnStart(request, response) As %Status
 	Return $$$OK
 }
 
+Method CreateStreamContainer(path) As %Stream.FileCharacter
+{
+	Set st=##class(%Stream.FileCharacter).%New()
+	Set st.Filename=path ;"/home/irisowner/incoming/in/a.txt"
+	Set sc=##class(Ens.StreamContainer).%New(st)
+	Set sc.OriginalFilename=path
+	Return sc
+}
+
 Storage Default
 {
 <Data name="CustomDefaultData">

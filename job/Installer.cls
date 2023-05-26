@@ -76,6 +76,7 @@ ClassMethod setup(Namespace As %String, srcdir As %String) As %Status
 
     #; Credentialを追加/変更
     Set tSC=##class(Ens.Config.Credentials).SetCredential("default","_SYSTEM","SYS",1)
+    Set tSC=##class(Ens.Config.Credentials).SetCredential("sftp","foo","pass",1)
     $$$ThrowOnError(tSC)
           
     #;IRISタスクを追加

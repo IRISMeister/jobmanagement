@@ -13,7 +13,6 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <process language='objectscript' request='Task.Request.CallJob' response='Task.Response.CallJob' contextsuperclass='Task.Context.Custom' height='2700' width='2000' >
 <sequence xend='200' yend='1750' >
 <code xpos='200' ypos='250' >
-<annotation><![CDATA[Customコードの例。無効化してある上記のassignと同等の機能をコードで実現したもの。]]></annotation>
 <![CDATA[ Do context.OnStart(request,response)]]>
 </code>
 <scope xpos='200' ypos='350' xend='200' yend='1550' >

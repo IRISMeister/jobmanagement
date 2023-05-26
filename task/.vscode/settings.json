@@ -1,15 +1,4 @@
 {
-  "intersystems.servers": {   
-      "iris-task": {
-          "webServer": {
-              "scheme": "http",
-              "host": "localhost",
-              "port": 52874
-          },
-          "username": "SuperUser",
-          "password": "SYS"
-        }
-  },
   "objectscript.conn": {
     "active": true,
     "server": "iris-task",

@@ -1,15 +1,4 @@
 {
-    "intersystems.servers": {   
-        "iris-job": {
-            "webServer": {
-                "scheme": "http",
-                "host": "localhost",
-                "port": 52873
-            },
-            "username": "SuperUser",
-            "password": "SYS"
-        }
-    },
     "objectscript.conn": {
         "active": true,
         "server": "iris-job",

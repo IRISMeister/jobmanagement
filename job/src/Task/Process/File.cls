@@ -15,7 +15,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </context>
 <sequence xend='200' yend='700' >
 <scope xpos='200' ypos='250' xend='200' yend='600' >
-<call name='CallFileOperation' target='EnsLib.FTP.PassthroughOperation' async='0' xpos='200' ypos='350' >
+<call name='CallSFTPOperation' target='SFTP' async='0' xpos='200' ypos='350' >
 <request type='Ens.StreamContainer' >
 <assign property="callrequest" value="request" action="set" />
 </request>

@@ -70,25 +70,21 @@ XData ProductionDefinition
   </Item>
   <Item Name="Test.Service.Call" Category="" ClassName="Test.Service.Call" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="FileWatcher" Category="" ClassName="Task.Service.FileWatcher" PoolSize="1" Enabled="false" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
-    <Setting Target="Adapter" Name="FilePath">/home/irisowner/filewatcher/in/</Setting>
-    <Setting Target="Adapter" Name="FileSpec">*.txt</Setting>
-    <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/filewatcher/arc/</Setting>
-  </Item>
   <Item Name="EnsLib.File.PassthroughService" Category="" ClassName="EnsLib.File.PassthroughService" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
     <Setting Target="Host" Name="TargetConfigNames">File</Setting>
-    <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/filewatcher/arc/</Setting>
-    <Setting Target="Adapter" Name="FilePath">/home/irisowner/filewatcher/in/</Setting>
-    <Setting Target="Adapter" Name="FileSpec">*.txt</Setting>
+    <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/incoming/arc/</Setting>
+    <Setting Target="Adapter" Name="FilePath">/home/irisowner/incoming/in/</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*.test</Setting>
   </Item>
-  <Item Name="EnsLib.FTP.PassthroughOperation" Category="" ClassName="EnsLib.FTP.PassthroughOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
-    <Setting Target="Adapter" Name="Credentials">centos7</Setting>
-    <Setting Target="Adapter" Name="FTPServer">172.18.100.240</Setting>
+  <Item Name="SFTP" Category="" ClassName="EnsLib.FTP.PassthroughOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+    <Setting Target="Adapter" Name="Credentials">sftp</Setting>
+    <Setting Target="Adapter" Name="FTPServer">sftp</Setting>
     <Setting Target="Adapter" Name="FTPPort"></Setting>
     <Setting Target="Adapter" Name="Protocol">SFTP</Setting>
-    <Setting Target="Adapter" Name="FilePath">/root</Setting>
+    <Setting Target="Adapter" Name="FilePath">/upload</Setting>
     <Setting Target="Host" Name="AlertOnError">1</Setting>
     <Setting Target="Host" Name="AlertGroups">FileGroup</Setting>
+    <Setting Target="Host" Name="Filename">%f</Setting>
   </Item>
   <Item Name="File" Category="" ClassName="Task.Process.File" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
   </Item>

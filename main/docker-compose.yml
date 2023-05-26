@@ -25,6 +25,7 @@ services:
       - ISC_CPF_MERGE_FILE=/ISC/merge.cpf
     volumes:
       - ./:/ISC     
+      - ../sftp/upload:/home/irisowner/upload
     networks:
       - iris-tier
 
@@ -38,10 +39,23 @@ services:
       - TZ=JST-9
       - ISC_CPF_MERGE_FILE=/ISC/merge.cpf
     volumes:
-      - ./:/ISC     
+      - ./:/ISC
     networks:
       - iris-tier
-          
+
+  sftp:
+    image: atmoz/sftp
+    hostname: sftp
+    volumes:
+    - ../sftp/upload:/home/foo/upload
+    - ../sftp/users.conf:/etc/sftp/users.conf:ro 
+    ports:
+    - "2222:22"
+    environment:
+    - TZ=JST-9
+    networks:
+    - iris-tier
+
 networks:
   iris-tier:
     driver: bridge

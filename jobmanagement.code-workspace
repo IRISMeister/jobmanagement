@@ -11,9 +11,33 @@
 		{
 			"name": "task",
 			"path": "task"
+		},
+		{
+			"name": "sftp",
+			"path": "sftp"
 		}
 	],
 	"settings": {
-		"objectscript.conn.active": false
+		"objectscript.conn.active": false,
+		"intersystems.servers": {   
+			"iris-job": {
+				"webServer": {
+					"scheme": "http",
+					"host": "localhost",
+					"port": 52873
+				},
+				"username": "SuperUser",
+				"password": "SYS"
+			},
+			"iris-task": {
+				"webServer": {
+					"scheme": "http",
+					"host": "localhost",
+					"port": 52874
+				},
+				"username": "SuperUser",
+				"password": "SYS"
+			  }
+		}
 	}
 }
