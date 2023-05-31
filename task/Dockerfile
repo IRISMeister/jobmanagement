@@ -3,12 +3,19 @@ FROM containers.intersystems.com/intersystems/iris-community:2023.1.0.229.0
 
 ARG COMMIT_ID="unknown"
 
-#USER root
-#ENV DEBIAN_FRONTEND noninteractive
-#RUN apt-get update && apt-get install -y tzdata
+USER root
+ENV DEBIAN_FRONTEND noninteractive
 
-# IRIS itself doesn't require ja language pack
-#RUN apt-get install -y language-pack-ja && update-locale LANG=ja_JP.UTF-8
+# Install sftp
+RUN apt-get update && apt-get install -y ssh sshpass
+RUN echo "\n\
+Match group sftp \n\
+ChrootDirectory /home \n\
+X11Forwarding no \n\
+AllowTcpForwarding no \n\
+ForceCommand internal-sftp \n\
+" >> /etc/ssh/sshd_config
+RUN addgroup sftp && useradd -m sftp_user -g sftp && echo "sftp_user:sftp_password" | chpasswd && chmod 777 /home/sftp_user/ && echo "irisowner:irisowner" | chpasswd && usermod -aG sftp irisowner
 
 USER irisowner
 
@@ -25,7 +32,8 @@ RUN  iris start $ISC_PACKAGE_INSTANCENAME \
 
 #++ until imageBuildSteps.sh is chnaged++
 # imageBuildSteps makes appuser 'ForceChangePassword' state....
-RUN iris start $ISC_PACKAGE_INSTANCENAME nostu quietly \
+RUN mkdir -p incoming/in \
+ && iris start $ISC_PACKAGE_INSTANCENAME nostu quietly \
  && printf "kill ^%%SYS(\"JOURNAL\") kill ^SYS(\"NODE\") h\n" | iris session $ISC_PACKAGE_INSTANCENAME -B | cat \
  && iris stop $ISC_PACKAGE_INSTANCENAME quietly bypass \
  && rm -f $ISC_PACKAGE_INSTALLDIR/mgr/journal.log \

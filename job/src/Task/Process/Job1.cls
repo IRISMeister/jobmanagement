@@ -23,12 +23,12 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <![CDATA[ Do context.OnStart(request,response)]]>
 </code>
 <scope xpos='200' ypos='550' xend='200' yend='2250' >
-<call name='task1' target='CallTask' async='0' xpos='200' ypos='650' >
-<annotation><![CDATA[NewClass1@Target1,同期
+<call name='task1' target='cCallTask' async='0' xpos='200' ypos='650' >
+<annotation><![CDATA[NewClass1@Target1_REST,同期
 ]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
-<assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
+<assign property="callrequest.Target" value="&quot;Target1_REST&quot;" action="set" />
 <assign property="callrequest.TaskName" value="&quot;MyTask.NewClass1&quot;" action="set" />
 <assign property="callrequest.P1" value="request.P1" action="set" />
 <assign property="callrequest.P2" value="request.P2" action="set" />
@@ -52,12 +52,12 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </throw>
 </false>
 </if>
-<call name='task2' target='CallTask' async='0' xpos='200' ypos='1100' >
-<annotation><![CDATA[NewClass2@Target2,同期
+<call name='task2' target='cCallTask' async='0' xpos='200' ypos='1100' >
+<annotation><![CDATA[NewClass2@Target2_REST,同期
 ]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
-<assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
+<assign property="callrequest.Target" value="&quot;Target1_REST&quot;" action="set" />
 <assign property="callrequest.TaskName" value="&quot;MyTask.NewClass2&quot;" action="set" />
 <assign property="callrequest.P1" value="request.P1" action="set" />
 <assign property="callrequest.P2" value="request.P2" action="set" />
@@ -78,11 +78,11 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <throw fault='"TaskFault"' xpos='335' ypos='1350' />
 </false>
 </if>
-<call name='task3' target='CallTask' async='0' xpos='200' ypos='1550' >
-<annotation><![CDATA[NewClass3@Target2,同期+遅延]]></annotation>
+<call name='task3' target='cCallTask' async='0' xpos='200' ypos='1550' >
+<annotation><![CDATA[NewClass3@Target2_REST,同期+遅延]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
-<assign property="callrequest.Target" value="&quot;Target2&quot;" action="set" />
+<assign property="callrequest.Target" value="&quot;Target2_REST&quot;" action="set" />
 <assign property="callrequest.TaskName" value="&quot;MyTask.NewClass3&quot;" action="set" />
 <assign property="callrequest.P1" value="request.P1" action="set" />
 <assign property="callrequest.P2" value="request.P2" action="set" />

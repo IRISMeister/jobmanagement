@@ -38,11 +38,11 @@ $ docker compose down
 
 ### 処理内容
 
-BP/CallTask経由でtask1(ターゲット:BO/Target1,MyTask.NewClass1), task2(ターゲット:BO/Target1,MyTask.NewClass2), task3(ターゲット:BO/Target2,MyTask.NewClass3)を順番に同期実行。ただし、task3だけは遅延実行(taskインスタンス上でのタスクをJOBコマンドで実行し、遅延応答(トークン)を返却します)を行っています。
+BP/CallTask経由でtask1(ターゲット:BO/Target1_REST,MyTask.NewClass1), task2(ターゲット:BO/Target1_REST,MyTask.NewClass2), task3(ターゲット:BO/Target2_REST,MyTask.NewClass3)を順番に同期実行。ただし、task3だけは遅延実行(taskインスタンス上でのタスクをJOBコマンドで実行し、遅延応答(トークン)を返却します)を行っています。
 
-BO/Target1はRESTクライアントを使用して、IRISサーバ#1のRESTサービスを起動します。 その結果、IRISサーバ#1では[MyTask.NewClass1](task/src/MyTask/NewClass1.cls)と[MyTask.NewClass2](task/src/MyTask/NewClass2.cls)が、各々実行されます。その動作結果はグローバルに保存されます。 
+BO/Target1_RESTはRESTクライアントを使用して、IRISサーバ#1のRESTサービスを起動します。 その結果、IRISサーバ#1では[MyTask.NewClass1](task/src/MyTask/NewClass1.cls)と[MyTask.NewClass2](task/src/MyTask/NewClass2.cls)が、各々実行されます。その動作結果はグローバルに保存されます。 
 
-BO/Target2はRESTクライアントを使用して、IRISサーバ#2のRESTサービスを起動します。 その結果、IRISサーバ#2では[MyTask.NewClass3](task/src/MyTask/NewClass3.cls)が実行されます。その動作結果はグローバルに保存されます。 
+BO/Target2_RESTはRESTクライアントを使用して、IRISサーバ#2のRESTサービスを起動します。 その結果、IRISサーバ#2では[MyTask.NewClass3](task/src/MyTask/NewClass3.cls)が実行されます。その動作結果はグローバルに保存されます。 
 
 
 ```mermaid
@@ -52,33 +52,33 @@ participant /TaskComplete
 participant BS/Initiator
 participant BP/Job1
 participant BP/CallTask
-participant BO/Target1
-participant BO/Target2
+participant BO/Target1_REST
+participant BO/Target2_REST
 
 BS/Initiator->>+BP/Job1: Request
 
-BP/Job1->>+BP/CallTask: Task1@BO/Target1
+BP/Job1->>+BP/CallTask: Task1@BO/Target1_REST
 
-BP/CallTask->>+BO/Target1: invoke Task1
+BP/CallTask->>+BO/Target1_REST: invoke Task1
 
-BO/Target1->>+/target1/Task:REST Req
-/target1/Task-->>-BO/Target1:REST Resp
-BO/Target1-->>-BP/CallTask: Response
+BO/Target1_REST->>+/Target1_REST/Task:REST Req
+/Target1_REST/Task-->>-BO/Target1_REST:REST Resp
+BO/Target1_REST-->>-BP/CallTask: Response
 BP/CallTask-->>-BP/Job1: Response
 
-BP/Job1->>+BP/CallTask: Task2@BO/Target1
-BP/CallTask->>+BO/Target1: invoke Task2
-BO/Target1->>+/target1/Task:REST Req
-/target1/Task-->>-BO/Target1:REST Resp
-BO/Target1-->>-BP/CallTask: Response
+BP/Job1->>+BP/CallTask: Task2@BO/Target1_REST
+BP/CallTask->>+BO/Target1_REST: invoke Task2
+BO/Target1_REST->>+/Target1_REST/Task:REST Req
+/Target1_REST/Task-->>-BO/Target1_REST:REST Resp
+BO/Target1_REST-->>-BP/CallTask: Response
 BP/CallTask-->>-BP/Job1: Response
 
-BP/Job1->>+BP/CallTask: Task3@BO/Target2
-BP/CallTask->>+BO/Target2: Invoke Task3
-BO/Target2->>+/target2/Task:REST Req
-/target2/Task->>+BG Job:Job Command
-/target2/Task-->>-BO/Target2:REST Resp(Immediate)
-BO/Target2-->>-BP/CallTask:Resp(Deffered)
+BP/Job1->>+BP/CallTask: Task3@BO/Target2_REST
+BP/CallTask->>+BO/Target2_REST: Invoke Task3
+BO/Target2_REST->>+/Target2_REST/Task:REST Req
+/Target2_REST/Task->>+BG Job:Job Command
+/Target2_REST/Task-->>-BO/Target2_REST:REST Resp(Immediate)
+BO/Target2_REST-->>-BP/CallTask:Resp(Deffered)
 BG Job->>-/TaskComplete:REST Req(Token)
 activate /TaskComplete
 /TaskComplete->>BP/CallTask:Deffered Resp(Token)
@@ -131,12 +131,12 @@ $ docker compose exec job iris session iris -U job job2   (BP/Job2)
 
 ### 処理内容
 
-BP/job2aを非同期呼び出し後、指定された時間("PT5S", 5秒)だけBPを停止、その後,BP/job2bを非同期実行し、双方の完了を待つ。双方が正常終了した場合にのみ、task1(ターゲット:target1,MyTask.NewClass1)を起動する。  
+BP/job2aを非同期呼び出し後、指定された時間("PT5S", 5秒)だけBPを停止、その後,BP/job2bを非同期実行し、双方の完了を待つ。双方が正常終了した場合にのみ、task1(ターゲット:Target1_REST,MyTask.NewClass1)を起動する。  
 
-BP/job2aはtask1(ターゲット:target1,MyTask.SlowTask)を実行します。  
+BP/job2aはtask1(ターゲット:Target1_REST,MyTask.SlowTask)を実行します。  
 > MyTask.SlowTaskは10秒間sleepして、時間がかかる処理を再現しています。
 
-BP/job2bはtask1(ターゲット:target1,MyTask.FastTask)を実行します。  
+BP/job2bはtask1(ターゲット:Target1_REST,MyTask.FastTask)を実行します。  
 
 下記のトレースにおいて、Job2->Job2aへのCallへの応答はその10秒後になっている(SlowTaskが10秒かかるため)こと、Job2->Job2bへのCall発生はJob2aへのコールの5秒後(PT5Sの指定による)となっていること(その応答は即時になっている)、Job2->CallTaskへのCallは、双方が完了した後となっていることが確認出来ます。
 
@@ -169,7 +169,7 @@ $ docker compose exec job iris session iris -U job job3   (BP/Job3)
 
 ### 処理内容
 
-task1(ターゲット:BO/Target1,MyTask.SlowTask), task2(ターゲット:BO/Target1,MyTask.FastTask)を非同期(並列)で実行し、双方の完了を待つ。双方が正常終了した場合にのみ, task3(ターゲット:BO/Target1,MyTask.NewClass1)を同期実行。
+task1(ターゲット:BO/Target1_REST,MyTask.SlowTask), task2(ターゲット:BO/Target1_REST,MyTask.FastTask)を非同期(並列)で実行し、双方の完了を待つ。双方が正常終了した場合にのみ, task3(ターゲット:BO/Target1_REST,MyTask.NewClass1)を同期実行。
 
 ### 処理結果
 
@@ -195,7 +195,7 @@ job4はワークフローが介在します。そのためBPの処理は[ユー�
 
 ### 処理内容
 
-BP/CallTask経由でtask1(ターゲット:BO/Target1,MyTask.NewClass1)を同期実行します。その後、ワークフローを起動して、オペレータの指示待ち状態になります。指示が得られ次第、, task2(ターゲット:BO/Target1,MyTask.NewClass2)を同期実行します。
+BP/CallTask経由でtask1(ターゲット:BO/Target1_REST,MyTask.NewClass1)を同期実行します。その後、ワークフローを起動して、オペレータの指示待ち状態になります。指示が得られ次第、, task2(ターゲット:BO/Target1_REST,MyTask.NewClass2)を同期実行します。
 
 ![](images/wf1.png)
 
@@ -227,9 +227,9 @@ JOB1を使用しますが、error1を使用すると、疑似的にアプリケ�
 
 ![](images/up.png)
 
-対処の選択肢には、再実行(エラーが発生したコール、今回のケースではMyTask.NewTask2.clsを呼び出す2番目のBP/CallTask->Target1コール、から再実行する)、継続(エラーを無視して継続する、今回のケースではMyTask.NewTask3.clsを呼び出す、BP/CallTask->Target2コールから処理を継続する)、中止(残りの処理の実行を中止して、BP/Job1を終了する)があります。
+対処の選択肢には、再実行(エラーが発生したコール、今回のケースではMyTask.NewTask2.clsを呼び出す2番目のBP/CallTask->Target1_RESTコール、から再実行する)、継続(エラーを無視して継続する、今回のケースではMyTask.NewTask3.clsを呼び出す、BP/CallTask->Target2_RESTコールから処理を継続する)、中止(残りの処理の実行を中止して、BP/Job1を終了する)があります。
 
-> 今回のゼロ除算エラーは何度実行しても発生するので、「継続」を選択します。これで先ほど保留されていたBPが再開し、次の処理(BO/Target2の呼び出し)に進み、端末に結果が表示されます。
+> 今回のゼロ除算エラーは何度実行しても発生するので、「継続」を選択します。これで先ほど保留されていたBPが再開し、次の処理(BO/Target2_RESTの呼び出し)に進み、端末に結果が表示されます。
 
 ```
 output=6@Task.Response.CallJob  ; <OREF>
@@ -279,5 +279,98 @@ Jobx
 -> Call SendFile
 --> Stream作成や指定されたターゲット(この場合SFTPオペレーション)へのCall,応答(ヘッダのみ)からのステータス取得、
 -> Call CallTask
+
+
+複数フォルダの監視と全てそろったときにBPを継続する仕組みを試作中
+
+フォルダ監視は割り切って、送信元が作成してくれるものとする。
+理由：受信側で行うと、監視フォルダが増えると高くつく。FileWatcher的アプローチもダウン時に取りこぼしが生じるので不安定になる。
+つまり、送信元が下記のようなファイルを作成することを期待する。
+
+送信元A
+folderA/1.txt
+folderA/2.txt
+folderA/3.txt
+common/folderA.txt <=中身は空で良い。トリガファイル。これを監視する。
+送信元B
+folderB/1.txt
+folderB/2.txt
+common/folderB.txt <=中身は空で良い。トリガファイル。これを監視する。
+送信元X
+    ・
+    ・
+    ・
+共通
+common/folderA.txt
+common/folderB.txt
+
+これならcommon/をEnslib.Fileで監視するだけで済む。
+
+------------------------------------------
+テスト手順
+
+- 単独File待ちのテスト
+手元ファイルを外部にSFTPしたら、その応答がしばらくしてから(非同期で)ファイルで帰ってくるような連携を想定。
+
+
+```
+docker compose exec job iris session iris -UJOB job5WaitFile
+```
+あるいは
+job5waitfileをSMPでTEST実行
+
+ブロックされる
+
+待ちファイルが登録される
+```
+SELECT FileName, Token FROM Task_Data.WaitFile
+FileName	Token
+/home/irisowner/incoming/folder1/100.res.txt    5|Task.Production1
+```
+
+以下でブロック状態が解消される。(待っているファイルを作成してあげる)
+
+sftp経由でtarget1(task)からjobにファイルをput
+```
+docker compose exec task sshpass -p "irisowner" sftp -o "StrictHostKeyChecking no" irisowner@job
+sftp> put commit.txt irisowner/incoming/in/100.res.txt
+```
+
+あるいは直接ファイルを作成。
+```
+docker compose exec job bash -c 'echo "abc" > /home/irisowner/incoming/in/100.res.txt'
+```
+
+
+
+- 複数Folder待ちのテスト
+指定した複数のフォルダ以下にファイルが配置された時点で次の処理に進む。
+
+```
+docker compose exec job iris session iris -UJOB job6WaitFolders
+```
+あるいはSMPでBP/job6WaitFoldersをテスト実行する。
+
+いずれも、ブロックされる
+
+
+待ちフォルダが登録される
+```
+SELECT FolderName, Token FROM Task_Data.WaitFolder
+FolderName	Token
+/home/irisowner/incoming/folder1/	5|Task.Production1
+/home/irisowner/incoming/folder2/	6|Task.Production1
+```
+
+jobコンテナのfolder1/ folder2/下に適当にファイルを作成する
+./add-files.sh
+
+以下でブロック状態が解消される。
+
+```
+docker compose exec job bash -c 'echo "/home/irisowner/incoming/folder1/" > /home/irisowner/incoming/common/1.txt'
+docker compose exec job bash -c 'echo "/home/irisowner/incoming/folder2/" > /home/irisowner/incoming/common/2.txt'
+docker compose exec job ls /home/irisowner/incoming/common
+```
 
 

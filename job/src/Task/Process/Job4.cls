@@ -19,11 +19,11 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <![CDATA[ Do context.OnStart(request,response)]]>
 </code>
 <scope xpos='200' ypos='350' xend='200' yend='1700' >
-<call name='task1' target='CallTask' async='0' xpos='200' ypos='450' >
-<annotation><![CDATA[NewClass1@Target1,同期]]></annotation>
+<call name='task1' target='cCallTask' async='0' xpos='200' ypos='450' >
+<annotation><![CDATA[NewClass1@Target1_REST,同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
-<assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
+<assign property="callrequest.Target" value="&quot;Target1_REST&quot;" action="set" />
 <assign property="callrequest.TaskName" value="&quot;MyTask.NewClass1&quot;" action="set" />
 <assign property="callrequest.P1" value="request.P1" action="set" />
 <assign property="callrequest.P2" value="request.P2" action="set" />
@@ -62,11 +62,11 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </call>
 <sync name='sync' calls='WF Ask Operator' type='all' xpos='200' ypos='350' />
 </sequence>
-<call name='task2' target='CallTask' async='0' xpos='200' ypos='1000' >
-<annotation><![CDATA[NewClass2@Target1,同期]]></annotation>
+<call name='task2' target='cCallTask' async='0' xpos='200' ypos='1000' >
+<annotation><![CDATA[NewClass2@Target1_REST,同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
-<assign property="callrequest.Target" value="&quot;Target1&quot;" action="set" />
+<assign property="callrequest.Target" value="&quot;Target1_REST&quot;" action="set" />
 <assign property="callrequest.TaskName" value="&quot;MyTask.NewClass2&quot;" action="set" />
 <assign property="callrequest.P1" value="request.P1" action="set" />
 <assign property="callrequest.P2" value="request.P2" action="set" />

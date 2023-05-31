@@ -1,4 +1,4 @@
-ROUTINE timing
+ROUTINE bench
 #include %occStatus
 
 loop() public {
@@ -63,7 +63,7 @@ callrs(loop=0) public {
 #; あるいは、専用のJOBをEnsemble外に用意するか。
 #; あるいは、tcp_tw_reuseを設定(Linux), TcpTimedWaitDelay(Windows)で調整するか。
 #; d call^timing()
-call(loop=1,target="Target1",taskname="MyTask.NewClass1") public {
+call(loop=1,target="Target1_REST",taskname="MyTask.NewClass1") public {
 	Set st=$ZH
 	Set tSC = ##class(Ens.Director).CreateBusinessService("Test.Service.Call",.tService)
 	If ($IsObject(tService)) {
@@ -87,7 +87,7 @@ osdir() public {
 	If ($IsObject(tService)) {
 		Set input=##class(Task.Request.CallTask).%New()
 		Set input.SessionId=1
-		Set input.Target="Target1"
+		Set input.Target="Target1_REST"
 		Set input.TaskName="MyTask.OSDir"
 		Set input.Deferred=0
 		Set input.P1="c:\temp\"
@@ -101,7 +101,7 @@ osdir() public {
 test2b(loop=1,p1="abc",halttime=0) public {
 	Set st=$ZH
 	For i=1:1:loop {
-		Set tSC = ##class(Ens.Director).CreateBusinessService("Initiator",.tService)
+		Set tSC = ##class(Ens.Director).CreateBusinessService("Direct",.tService)
 		If ($IsObject(tService)) {
 			Set input=##class(Task.Request.CallJob).%New()
 			Set input.JobName="Job2b"

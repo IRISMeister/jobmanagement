@@ -13,7 +13,7 @@ Method OnTask() As %Status
 	If ..JobName="" Return 'tSC
 
 	Try {
-		Set tSC = ##class(Ens.Director).CreateBusinessService("Initiator",.tService)
+		Set tSC = ##class(Ens.Director).CreateBusinessService("Direct",.tService)
 		
 		If ($IsObject(tService)) {
 			Set input=##class(Task.Request.CallJob).%New()

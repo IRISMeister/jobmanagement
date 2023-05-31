@@ -1,7 +1,9 @@
 version: '3.7'
 services: 
   job: 
-    build: ../job
+    build: 
+      context: ../job 
+      dockerfile: Dockerfile
     command: --ISCAgent false --monitorCPF false
     ports:
       - 52873:52773
@@ -25,7 +27,6 @@ services:
       - ISC_CPF_MERGE_FILE=/ISC/merge.cpf
     volumes:
       - ./:/ISC     
-      - ../sftp/upload:/home/irisowner/upload
     networks:
       - iris-tier
 
@@ -49,8 +50,6 @@ services:
     volumes:
     - ../sftp/upload:/home/foo/upload
     - ../sftp/users.conf:/etc/sftp/users.conf:ro 
-    ports:
-    - "2222:22"
     environment:
     - TZ=JST-9
     networks:

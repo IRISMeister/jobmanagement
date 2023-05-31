@@ -19,6 +19,8 @@ Property iterator As %String(MAXLEN = 50);
 
 Property DelayParameter As %String(MAXLEN = 50);
 
+Property Files As list Of %String;
+
 Method OnStart(request, response) As %Status
 {
 	Set response.StartTime=$ZDATETIME($H,3)
@@ -33,6 +35,25 @@ Method CreateStreamContainer(path) As %Stream.FileCharacter
 	Set sc=##class(Ens.StreamContainer).%New(st)
 	Set sc.OriginalFilename=path
 	Return sc
+}
+
+Method ProcessFiles() As %Status
+{
+	#; ..Filesは<assign ... action="append>で更新しているので、その構造はリストのリスト、つまり
+	#; $LB($LB("file1","file2","file3"),$LB("file1","file2"))
+	#; のようになる。その内容を下記のループで取り出している。
+	Set folderCount=..Files.Count()
+	For i=1:1:folderCount {
+		Set fileCount=..Files.GetAt(i).Count()
+		For j=1:1:fileCount {
+			Set filename=..Files.GetAt(i).GetAt(j)
+			Set ^log($INCREMENT(^log))=filename
+			
+			#; 処理済みファイルを削除する
+			Set tSC=##class(%File).Delete(filename)
+		}
+	}
+	Return $$$OK
 }
 
 Storage Default
@@ -65,6 +86,9 @@ Storage Default
 </Value>
 <Value name="9">
 <Value>DelayParameter</Value>
+</Value>
+<Value name="10">
+<Value>Files</Value>
 </Value>
 </Data>
 <DefaultData>CustomDefaultData</DefaultData>

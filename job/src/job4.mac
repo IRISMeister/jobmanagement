@@ -3,7 +3,7 @@ main(p1="abc",halttime=0) public {
 	;
 	Write "You need to login as _SYSTEM user and open WF. Accept WF request to proceed.",!
 	;
-	Set tSC = ##class(Ens.Director).CreateBusinessService("Initiator",.tService)
+	Set tSC = ##class(Ens.Director).CreateBusinessService("Direct",.tService)
 	If ($IsObject(tService)) {
 		Set input=##class(Task.Request.CallJob).%New()
 		Set input.JobName="Job4"

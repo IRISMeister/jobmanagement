@@ -6,7 +6,7 @@ main(p1="abc",halttime=0) public {
 	; select * from Task_Response.CallTask
 	; select * from Task_Response.CallJob
 	;
-	Set tSC = ##class(Ens.Director).CreateBusinessService("Initiator",.tService)
+	Set tSC = ##class(Ens.Director).CreateBusinessService("Direct",.tService)
 	If ($IsObject(tService)) {
 		Set input=##class(Task.Request.CallJob).%New()
 		Set input.JobName="Job1"

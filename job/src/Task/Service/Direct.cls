@@ -1,7 +1,5 @@
-Class Task.Service.Initiator Extends Ens.BusinessService
+Class Task.Service.Direct Extends Ens.BusinessService
 {
-
-Parameter SETTINGS = "CallBP:Basic";
 
 Method OnProcessInput(pInput As Task.Request.CallJob, Output pOutput As %RegisteredObject) As %Status
 {
