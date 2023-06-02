@@ -283,7 +283,7 @@ Jobx
 
 複数フォルダの監視と全てそろったときにBPを継続する仕組みを試作中
 
-フォルダ監視は割り切って、送信元が作成してくれるものとする。
+フォルダ監視は割り切って、送信元がトリガとなるファイルを作成してくれるものとする。
 理由：受信側で行うと、監視フォルダが増えると高くつく。FileWatcher的アプローチもダウン時に取りこぼしが生じるので不安定になる。
 つまり、送信元が下記のようなファイルを作成することを期待する。
 
@@ -305,6 +305,9 @@ common/folderA.txt
 common/folderB.txt
 
 これならcommon/をEnslib.Fileで監視するだけで済む。
+
+課題としては、各システム別に用意したFTPアカウントが共通の場所(common/)を更新する必要が生じること。
+コンテナ版IRISは非rootで動作しているので、異なるFTPユーザがオーナになったフォルダやファイルをそのままではREAD/WRITE(DELETE)出来ないこと。
 
 ------------------------------------------
 テスト手順
@@ -339,6 +342,13 @@ sftp> put commit.txt irisowner/incoming/in/100.res.txt
 あるいは直接ファイルを作成。
 ```
 docker compose exec job bash -c 'echo "abc" > /home/irisowner/incoming/in/100.res.txt'
+```
+
+その他のsftpユーザ
+```
+docker compose exec task sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
+docker compose exec task sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user2@job
+docker compose exec task sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user3@job
 ```
 
 

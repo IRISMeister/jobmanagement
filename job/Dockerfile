@@ -6,7 +6,7 @@ USER root
 ENV DEBIAN_FRONTEND noninteractive
 
 # Install sftp
-RUN apt-get update && apt-get install -y ssh sshpass
+RUN apt-get update && apt-get install -y ssh sshpass zip unzip
 RUN echo "\n\
 Match group sftp \n\
 ChrootDirectory /home \n\
@@ -14,7 +14,11 @@ X11Forwarding no \n\
 AllowTcpForwarding no \n\
 ForceCommand internal-sftp \n\
 " >> /etc/ssh/sshd_config
-RUN addgroup sftp && useradd -m sftp_user -g sftp && echo "sftp_user:sftp_password" | chpasswd && chmod 777 /home/sftp_user/ && echo "irisowner:irisowner" | chpasswd && usermod -aG sftp irisowner
+RUN addgroup sftp && useradd -m sftp_user -g sftp && echo "sftp_user:sftp_password" | chpasswd && chmod 777 /home/sftp_user/ 
+RUN echo "irisowner:irisowner" | chpasswd && usermod -aG sftp irisowner
+RUN useradd -m sftp_user1 -g sftp && echo "sftp_user1:sftp_password" | chpasswd  
+RUN useradd -m sftp_user2 -g sftp && echo "sftp_user2:sftp_password" | chpasswd  
+RUN useradd -m sftp_user3 -g sftp && echo "sftp_user3:sftp_password" | chpasswd  
 
 USER irisowner
 

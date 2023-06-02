@@ -21,6 +21,8 @@ Property DelayParameter As %String(MAXLEN = 50);
 
 Property Files As list Of %String;
 
+Property TargetFiles As list Of %String;
+
 Method OnStart(request, response) As %Status
 {
 	Set response.StartTime=$ZDATETIME($H,3)
@@ -28,7 +30,7 @@ Method OnStart(request, response) As %Status
 	Return $$$OK
 }
 
-Method CreateStreamContainer(path) As %Stream.FileCharacter
+ClassMethod CreateStreamContainer(path) As %Stream.FileCharacter
 {
 	Set st=##class(%Stream.FileCharacter).%New()
 	Set st.Filename=path ;"/home/irisowner/incoming/in/a.txt"
@@ -40,17 +42,14 @@ Method CreateStreamContainer(path) As %Stream.FileCharacter
 Method ProcessFiles() As %Status
 {
 	#; ..Filesは<assign ... action="append>で更新しているので、その構造はリストのリスト、つまり
-	#; $LB($LB("file1","file2","file3"),$LB("file1","file2"))
-	#; のようになる。その内容を下記のループで取り出している。
+	#; ..Files=$LB($LB("file1","file2","file3"),$LB("file1","file2"))
+	#; そのままでは扱いにくいので、フラットなリスト構造に変換する。
 	Set folderCount=..Files.Count()
 	For i=1:1:folderCount {
 		Set fileCount=..Files.GetAt(i).Count()
 		For j=1:1:fileCount {
 			Set filename=..Files.GetAt(i).GetAt(j)
-			Set ^log($INCREMENT(^log))=filename
-			
-			#; 処理済みファイルを削除する
-			Set tSC=##class(%File).Delete(filename)
+			Do ..TargetFiles.Insert(filename)
 		}
 	}
 	Return $$$OK
@@ -89,6 +88,9 @@ Storage Default
 </Value>
 <Value name="10">
 <Value>Files</Value>
+</Value>
+<Value name="11">
+<Value>TargetFiles</Value>
 </Value>
 </Data>
 <DefaultData>CustomDefaultData</DefaultData>

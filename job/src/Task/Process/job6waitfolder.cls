@@ -28,12 +28,18 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <response type='Task.Response.WaitFolder' />
 </call>
 <sync calls='call1,call2' type='all' xpos='200' ypos='550' />
-<foreach property='syncresponses' key='context.iterator'>
-<assign property="context.Files" value="syncresponses.GetAt(context.iterator).Files" action="append" />
+<foreach property='syncresponses' key='context.iterator' xpos='200' ypos='650' xend='200' yend='350' >
+<assign property="context.Files" value="syncresponses.GetAt(context.iterator).Files" action="append" xpos='200' ypos='250' />
 </foreach>
-<code xpos='200' ypos='850' >
+<code xpos='200' ypos='750' >
 <![CDATA[ Do context.ProcessFiles()]]>
 </code>
+<call name='call3' target='Archive' async='0' xpos='200' ypos='850' >
+<request type='Task.Request.ArchiveFiles' >
+<assign property="callrequest.Files" value="context.TargetFiles" action="set" />
+</request>
+<response type='Ens.Response' />
+</call>
 </sequence>
 </process>
 }
