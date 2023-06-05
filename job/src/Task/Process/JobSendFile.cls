@@ -18,7 +18,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <scope xpos='200' ypos='350' xend='200' yend='800' >
 <call name='sendfile' target='SFTP' async='0' timeout='5' xpos='200' ypos='450' >
 <request type='Ens.StreamContainer' >
-<assign property="callrequest" value="context.CreateStreamContainer(&quot;/home/irisowner/incoming/in/a.txt&quot;)" action="set" />
+<assign property="callrequest" value="context.CreateStreamContainer(&quot;/home/irisowner/outgoing/100.req.txt&quot;)" action="set" />
 </request>
 <response type='Ens.Response' >
 </response>

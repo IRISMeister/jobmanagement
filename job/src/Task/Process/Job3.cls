@@ -17,10 +17,10 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </code>
 <scope xpos='200' ypos='350' xend='200' yend='1550' >
 <call name='task1' target='cCallTask' async='1' xpos='200' ypos='450' >
-<annotation><![CDATA[SlowTask@Target1_REST,非同期]]></annotation>
+<annotation><![CDATA[SlowTask@Task1_REST,非同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
-<assign property="callrequest.Target" value="&quot;Target1_REST&quot;" action="set" />
+<assign property="callrequest.Target" value="&quot;Task1_REST&quot;" action="set" />
 <assign property="callrequest.TaskName" value="&quot;MyTask.SlowTask&quot;" action="set" />
 <assign property="callrequest.P1" value="request.P1" action="set" />
 <assign property="callrequest.P2" value="request.P2" action="set" />
@@ -37,10 +37,10 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </response>
 </call>
 <call name='task2' target='cCallTask' async='1' xpos='200' ypos='550' >
-<annotation><![CDATA[FastTask@Target1_REST,非同期]]></annotation>
+<annotation><![CDATA[FastTask@Task1_REST,非同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
-<assign property="callrequest.Target" value="&quot;Target1_REST&quot;" action="set" />
+<assign property="callrequest.Target" value="&quot;Task1_REST&quot;" action="set" />
 <assign property="callrequest.TaskName" value="&quot;MyTask.FastTask&quot;" action="set" />
 <assign property="callrequest.P1" value="request.P1" action="set" />
 <assign property="callrequest.P2" value="request.P2" action="set" />
@@ -68,10 +68,10 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </if>
 </foreach>
 <call name='task3' target='cCallTask' async='0' xpos='200' ypos='850' >
-<annotation><![CDATA[NewClass1@Target1_REST,同期]]></annotation>
+<annotation><![CDATA[NewClass1@Task1_REST,同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
-<assign property="callrequest.Target" value="&quot;Target1_REST&quot;" action="set" />
+<assign property="callrequest.Target" value="&quot;Task1_REST&quot;" action="set" />
 <assign property="callrequest.TaskName" value="&quot;MyTask.NewClass1&quot;" action="set" />
 <assign property="callrequest.P1" value="request.P1" action="set" />
 <assign property="callrequest.P2" value="request.P2" action="set" />

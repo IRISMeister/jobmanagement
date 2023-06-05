@@ -38,11 +38,11 @@ $ docker compose down
 
 ### 処理内容
 
-BP/CallTask経由でtask1(ターゲット:BO/Target1_REST,MyTask.NewClass1), task2(ターゲット:BO/Target1_REST,MyTask.NewClass2), task3(ターゲット:BO/Target2_REST,MyTask.NewClass3)を順番に同期実行。ただし、task3だけは遅延実行(taskインスタンス上でのタスクをJOBコマンドで実行し、遅延応答(トークン)を返却します)を行っています。
+BP/CallTask経由でtask1(ターゲット:BO/Task1_REST,MyTask.NewClass1), task2(ターゲット:BO/Task1_REST,MyTask.NewClass2), task3(ターゲット:BO/Task2_REST,MyTask.NewClass3)を順番に同期実行。ただし、task3だけは遅延実行(taskインスタンス上でのタスクをJOBコマンドで実行し、遅延応答(トークン)を返却します)を行っています。
 
-BO/Target1_RESTはRESTクライアントを使用して、IRISサーバ#1のRESTサービスを起動します。 その結果、IRISサーバ#1では[MyTask.NewClass1](task/src/MyTask/NewClass1.cls)と[MyTask.NewClass2](task/src/MyTask/NewClass2.cls)が、各々実行されます。その動作結果はグローバルに保存されます。 
+BO/Task1_RESTはRESTクライアントを使用して、IRISサーバ#1のRESTサービスを起動します。 その結果、IRISサーバ#1では[MyTask.NewClass1](task/src/MyTask/NewClass1.cls)と[MyTask.NewClass2](task/src/MyTask/NewClass2.cls)が、各々実行されます。その動作結果はグローバルに保存されます。 
 
-BO/Target2_RESTはRESTクライアントを使用して、IRISサーバ#2のRESTサービスを起動します。 その結果、IRISサーバ#2では[MyTask.NewClass3](task/src/MyTask/NewClass3.cls)が実行されます。その動作結果はグローバルに保存されます。 
+BO/Task2_RESTはRESTクライアントを使用して、IRISサーバ#2のRESTサービスを起動します。 その結果、IRISサーバ#2では[MyTask.NewClass3](task/src/MyTask/NewClass3.cls)が実行されます。その動作結果はグローバルに保存されます。 
 
 
 ```mermaid
@@ -52,33 +52,33 @@ participant /TaskComplete
 participant BS/Initiator
 participant BP/Job1
 participant BP/CallTask
-participant BO/Target1_REST
-participant BO/Target2_REST
+participant BO/Task1_REST
+participant BO/Task2_REST
 
 BS/Initiator->>+BP/Job1: Request
 
-BP/Job1->>+BP/CallTask: Task1@BO/Target1_REST
+BP/Job1->>+BP/CallTask: Task1@BO/Task1_REST
 
-BP/CallTask->>+BO/Target1_REST: invoke Task1
+BP/CallTask->>+BO/Task1_REST: invoke Task1
 
-BO/Target1_REST->>+/Target1_REST/Task:REST Req
-/Target1_REST/Task-->>-BO/Target1_REST:REST Resp
-BO/Target1_REST-->>-BP/CallTask: Response
+BO/Task1_REST->>+/Task1_REST/Task:REST Req
+/Task1_REST/Task-->>-BO/Task1_REST:REST Resp
+BO/Task1_REST-->>-BP/CallTask: Response
 BP/CallTask-->>-BP/Job1: Response
 
-BP/Job1->>+BP/CallTask: Task2@BO/Target1_REST
-BP/CallTask->>+BO/Target1_REST: invoke Task2
-BO/Target1_REST->>+/Target1_REST/Task:REST Req
-/Target1_REST/Task-->>-BO/Target1_REST:REST Resp
-BO/Target1_REST-->>-BP/CallTask: Response
+BP/Job1->>+BP/CallTask: Task2@BO/Task1_REST
+BP/CallTask->>+BO/Task1_REST: invoke Task2
+BO/Task1_REST->>+/Task1_REST/Task:REST Req
+/Task1_REST/Task-->>-BO/Task1_REST:REST Resp
+BO/Task1_REST-->>-BP/CallTask: Response
 BP/CallTask-->>-BP/Job1: Response
 
-BP/Job1->>+BP/CallTask: Task3@BO/Target2_REST
-BP/CallTask->>+BO/Target2_REST: Invoke Task3
-BO/Target2_REST->>+/Target2_REST/Task:REST Req
-/Target2_REST/Task->>+BG Job:Job Command
-/Target2_REST/Task-->>-BO/Target2_REST:REST Resp(Immediate)
-BO/Target2_REST-->>-BP/CallTask:Resp(Deffered)
+BP/Job1->>+BP/CallTask: Task3@BO/Task2_REST
+BP/CallTask->>+BO/Task2_REST: Invoke Task3
+BO/Task2_REST->>+/Task2_REST/Task:REST Req
+/Task2_REST/Task->>+BG Job:Job Command
+/Task2_REST/Task-->>-BO/Task2_REST:REST Resp(Immediate)
+BO/Task2_REST-->>-BP/CallTask:Resp(Deffered)
 BG Job->>-/TaskComplete:REST Req(Token)
 activate /TaskComplete
 /TaskComplete->>BP/CallTask:Deffered Resp(Token)
@@ -93,7 +93,7 @@ BP/Job1-->>-BS/Initiator: Response
 その結果、IRISサーバ#1(コンテナ task)上には、同一時刻帯に下記の2個(JOB1は5分ごとに自動起動されるので、時間経過とともに数は増えます)のグローバルが保存されます。
 
 ```
-docker compose exec task iris session iris -UTASK
+docker compose exec task1 iris session iris -UTASK
 TASK>zw ^MyTask
 ^MyTask=30
 ^MyTask(1)=$lb("05/23/2023 12:30:00","MyTask.NewClass1","1","abc",0,"","","")
@@ -131,12 +131,12 @@ $ docker compose exec job iris session iris -U job job2   (BP/Job2)
 
 ### 処理内容
 
-BP/job2aを非同期呼び出し後、指定された時間("PT5S", 5秒)だけBPを停止、その後,BP/job2bを非同期実行し、双方の完了を待つ。双方が正常終了した場合にのみ、task1(ターゲット:Target1_REST,MyTask.NewClass1)を起動する。  
+BP/job2aを非同期呼び出し後、指定された時間("PT5S", 5秒)だけBPを停止、その後,BP/job2bを非同期実行し、双方の完了を待つ。双方が正常終了した場合にのみ、task1(ターゲット:Task1_REST,MyTask.NewClass1)を起動する。  
 
-BP/job2aはtask1(ターゲット:Target1_REST,MyTask.SlowTask)を実行します。  
+BP/job2aはtask1(ターゲット:Task1_REST,MyTask.SlowTask)を実行します。  
 > MyTask.SlowTaskは10秒間sleepして、時間がかかる処理を再現しています。
 
-BP/job2bはtask1(ターゲット:Target1_REST,MyTask.FastTask)を実行します。  
+BP/job2bはtask1(ターゲット:Task1_REST,MyTask.FastTask)を実行します。  
 
 下記のトレースにおいて、Job2->Job2aへのCallへの応答はその10秒後になっている(SlowTaskが10秒かかるため)こと、Job2->Job2bへのCall発生はJob2aへのコールの5秒後(PT5Sの指定による)となっていること(その応答は即時になっている)、Job2->CallTaskへのCallは、双方が完了した後となっていることが確認出来ます。
 
@@ -149,7 +149,7 @@ BP/job2bはtask1(ターゲット:Target1_REST,MyTask.FastTask)を実行します
 > タイムスタンプはタスクの完了時刻。
 
 ```
-docker compose exec task iris session iris -UTASK
+docker compose exec task1 iris session iris -UTASK
 TASK>zw ^MyTask
 ^MyTask=3
 ^MyTask(1)=$lb("05/22/2023 14:58:04","MyTask.FastTask","1","abc",0,"","","")
@@ -169,14 +169,14 @@ $ docker compose exec job iris session iris -U job job3   (BP/Job3)
 
 ### 処理内容
 
-task1(ターゲット:BO/Target1_REST,MyTask.SlowTask), task2(ターゲット:BO/Target1_REST,MyTask.FastTask)を非同期(並列)で実行し、双方の完了を待つ。双方が正常終了した場合にのみ, task3(ターゲット:BO/Target1_REST,MyTask.NewClass1)を同期実行。
+task1(ターゲット:BO/Task1_REST,MyTask.SlowTask), task2(ターゲット:BO/Task1_REST,MyTask.FastTask)を非同期(並列)で実行し、双方の完了を待つ。双方が正常終了した場合にのみ, task3(ターゲット:BO/Task1_REST,MyTask.NewClass1)を同期実行。
 
 ### 処理結果
 
 その結果、taskホスト(コンテナ)上には、下記の3個のグローバルが保存されます。
 
 ```
-docker compose exec task iris session iris -UTASK
+docker compose exec task1 iris session iris -UTASK
 TASK>zw ^MyTask
 ^MyTask(4)=$lb("05/22/2023 15:24:45","MyTask.FastTask","22","abc",0,"","","")
 ^MyTask(5)=$lb("05/22/2023 15:24:55","MyTask.SlowTask","22","abc",0,"","","")
@@ -195,7 +195,7 @@ job4はワークフローが介在します。そのためBPの処理は[ユー�
 
 ### 処理内容
 
-BP/CallTask経由でtask1(ターゲット:BO/Target1_REST,MyTask.NewClass1)を同期実行します。その後、ワークフローを起動して、オペレータの指示待ち状態になります。指示が得られ次第、, task2(ターゲット:BO/Target1_REST,MyTask.NewClass2)を同期実行します。
+BP/CallTask経由でtask1(ターゲット:BO/Task1_REST,MyTask.NewClass1)を同期実行します。その後、ワークフローを起動して、オペレータの指示待ち状態になります。指示が得られ次第、, task2(ターゲット:BO/Task1_REST,MyTask.NewClass2)を同期実行します。
 
 ![](images/wf1.png)
 
@@ -204,7 +204,7 @@ BP/CallTask経由でtask1(ターゲット:BO/Target1_REST,MyTask.NewClass1)を�
 ### 処理結果
 
 ```
-docker compose exec task iris session iris -UTASK
+docker compose exec task1 iris session iris -UTASK
 TASK>zw ^MyTask
 ^MyTask(3)=$lb("05/22/2023 16:18:12","MyTask.NewClass1","15","abc",0,"","","")
 ^MyTask(4)=$lb("05/22/2023 16:19:38","MyTask.NewClass2",15,"abc",0,"","","")
@@ -227,9 +227,9 @@ JOB1を使用しますが、error1を使用すると、疑似的にアプリケ�
 
 ![](images/up.png)
 
-対処の選択肢には、再実行(エラーが発生したコール、今回のケースではMyTask.NewTask2.clsを呼び出す2番目のBP/CallTask->Target1_RESTコール、から再実行する)、継続(エラーを無視して継続する、今回のケースではMyTask.NewTask3.clsを呼び出す、BP/CallTask->Target2_RESTコールから処理を継続する)、中止(残りの処理の実行を中止して、BP/Job1を終了する)があります。
+対処の選択肢には、再実行(エラーが発生したコール、今回のケースではMyTask.NewTask2.clsを呼び出す2番目のBP/CallTask->Task1_RESTコール、から再実行する)、継続(エラーを無視して継続する、今回のケースではMyTask.NewTask3.clsを呼び出す、BP/CallTask->Task2_RESTコールから処理を継続する)、中止(残りの処理の実行を中止して、BP/Job1を終了する)があります。
 
-> 今回のゼロ除算エラーは何度実行しても発生するので、「継続」を選択します。これで先ほど保留されていたBPが再開し、次の処理(BO/Target2_RESTの呼び出し)に進み、端末に結果が表示されます。
+> 今回のゼロ除算エラーは何度実行しても発生するので、「継続」を選択します。これで先ほど保留されていたBPが再開し、次の処理(BO/Task2_RESTの呼び出し)に進み、端末に結果が表示されます。
 
 ```
 output=6@Task.Response.CallJob  ; <OREF>
@@ -254,7 +254,7 @@ $
 ### 起動方法
 
 ```
-$ docker compose exec task iris stop iris quietly
+$ docker compose exec task1 iris stop iris quietly
 ```
 この場合、所定の回数リトライ後にBOがタイムアウトを起こし、[管理アラート](http://localhost:9203/csp/job/EnsPortal.ManagedAlerts.zen?$NAMESPACE=JOB&$NAMESPACE=JOB&)が発生します。
 
@@ -324,33 +324,34 @@ job5waitfileをSMPでTEST実行
 
 ブロックされる
 
-待ちファイルが登録される
+ファイルのsftp送信後に、待ちファイルが登録される
 ```
 SELECT FileName, Token FROM Task_Data.WaitFile
 FileName	Token
-/home/irisowner/incoming/folder1/100.res.txt    5|Task.Production1
+/home/sftp_user1/incoming/in/100.res.txt    5|Task.Production1
 ```
 
-以下でブロック状態が解消される。(待っているファイルを作成してあげる)
+待っているファイルを作成してあげることでブロック状態が解消される。内容は何でも良い。ただし、putするファイルはirisownerアカウントで動作するirisがdeleteできるように、権限が66xになる必要がある。
 
-sftp経由でtarget1(task)からjobにファイルをput
+1. 外部アプリケーションの動作を、target1(task)からsftp経由でjobにファイルをput、することで再現
 ```
-docker compose exec task sshpass -p "irisowner" sftp -o "StrictHostKeyChecking no" irisowner@job
-sftp> put commit.txt irisowner/incoming/in/100.res.txt
+docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
+sftp> put commit.txt incoming/in/100.res.txt
 ```
 
-あるいは直接ファイルを作成。
+2. 直接待っているファイルを作成。
 ```
-docker compose exec job bash -c 'echo "abc" > /home/irisowner/incoming/in/100.res.txt'
+docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/100.res.txt'
 ```
 
 その他のsftpユーザ
 ```
-docker compose exec task sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
-docker compose exec task sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user2@job
-docker compose exec task sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user3@job
-```
+docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
+docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user2@job
+docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user3@job
+sftp> put commit.txt incoming/in/100.res.txt
 
+```
 
 
 - 複数Folder待ちのテスト
@@ -368,19 +369,42 @@ docker compose exec job iris session iris -UJOB job6WaitFolders
 ```
 SELECT FolderName, Token FROM Task_Data.WaitFolder
 FolderName	Token
-/home/irisowner/incoming/folder1/	5|Task.Production1
-/home/irisowner/incoming/folder2/	6|Task.Production1
+/home/sftp_user1/incoming/folder1/	5|Task.Production1
+/home/sftp_user2/incoming/folder2/	6|Task.Production1
 ```
 
-jobコンテナのfolder1/ folder2/下に適当にファイルを作成する
-./add-files.sh
-
-以下でブロック状態が解消される。
+以下を実行(jobコンテナのfolder1/ folder2/下に適当にファイルを作成し、セマフォファイルを作成)するとブロック状態が解消される。
 
 ```
-docker compose exec job bash -c 'echo "/home/irisowner/incoming/folder1/" > /home/irisowner/incoming/common/1.txt'
-docker compose exec job bash -c 'echo "/home/irisowner/incoming/folder2/" > /home/irisowner/incoming/common/2.txt'
-docker compose exec job ls /home/irisowner/incoming/common
+./commit-files.sh
 ```
 
+課題
 
+異なるftpアカウント(外部システム)が共通のフォルダ(/home/irisowner/incoming/common)に出力する(できる)のは、あまり好ましくない。
+(相互に破壊しかねない)
+
+セマフォファイルの監視フォルダをシンボリックリンクで作成
+docker compose exec -u root job bash
+$ ln -s /home/sftp_user/incoming/in /home/irisowner/incoming/common/sftp_user
+$ ln -s /home/sftp_user1/incoming/in /home/irisowner/incoming/common/sftp_user1
+$ ln -s /home/sftp_user2/incoming/in /home/irisowner/incoming/common/sftp_user2
+$ ln -s /home/sftp_user3/incoming/in /home/irisowner/incoming/common/sftp_user3
+
+docker compose exec job bash
+$ ll /home/irisowner/incoming/common <=このサブフォルダを単一のBSによる監視対象にする
+total 12
+drwxr-xr-x 1 irisowner irisowner 4096 Jun  5 16:07 ./
+drwxr-xr-x 1 irisowner irisowner 4096 Jun  5 15:10 ../
+lrwxrwxrwx 1 root      root        27 Jun  5 16:07 sftp_user -> /home/sftp_user/incoming/in/
+lrwxrwxrwx 1 root      root        28 Jun  5 16:03 sftp_user1 -> /home/sftp_user1/incoming/in/
+lrwxrwxrwx 1 root      root        28 Jun  5 16:03 sftp_user2 -> /home/sftp_user2/incoming/in/
+lrwxrwxrwx 1 root      root        28 Jun  5 16:07 sftp_user3 -> /home/sftp_user3/incoming/in/
+$
+
+
+(外部システムからの)ファイルのPut
+docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
+sftp> put commit.txt incoming/in/
+docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user2@job
+sftp> put commit.txt incoming/in/

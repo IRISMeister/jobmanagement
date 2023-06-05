@@ -33,7 +33,7 @@ Method OnStart(request, response) As %Status
 ClassMethod CreateStreamContainer(path) As %Stream.FileCharacter
 {
 	Set st=##class(%Stream.FileCharacter).%New()
-	Set st.Filename=path ;"/home/irisowner/incoming/in/a.txt"
+	Set st.Filename=path
 	Set sc=##class(Ens.StreamContainer).%New(st)
 	Set sc.OriginalFilename=path
 	Return sc

@@ -16,7 +16,7 @@ services:
     networks:
       - iris-tier
       
-  task: 
+  task1: 
     build: ../task
     command: --ISCAgent false --monitorCPF false
     ports:

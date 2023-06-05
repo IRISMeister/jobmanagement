@@ -48,10 +48,10 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </if>
 </foreach>
 <call name='task1' target='cCallTask' async='0' xpos='200' ypos='1050' >
-<annotation><![CDATA[NewClass1@Target1_REST,同期]]></annotation>
+<annotation><![CDATA[NewClass1@Task1_REST,同期]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
-<assign property="callrequest.Target" value="&quot;Target1_REST&quot;" action="set" />
+<assign property="callrequest.Target" value="&quot;Task1_REST&quot;" action="set" />
 <assign property="callrequest.TaskName" value="&quot;MyTask.NewClass1&quot;" action="set" />
 <assign property="callrequest.P1" value="request.P1" action="set" />
 <assign property="callrequest.P2" value="request.P2" action="set" />

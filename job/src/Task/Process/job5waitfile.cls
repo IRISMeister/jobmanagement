@@ -12,7 +12,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 {
 <process language='objectscript' request='Task.Request.CallJob' response='Ens.Response' contextsuperclass='Task.Context.Custom' height='2000' width='2000' >
 <sequence xend='200' yend='650' >
-<call name='sendfile' target='Target1_SFTP' async='0' timeout='5' xpos='200' ypos='250' >
+<call name='sendfile' target='Task1_SFTP' async='0' timeout='5' xpos='200' ypos='250' >
 <annotation><![CDATA[ファイルを送信]]></annotation>
 <request type='Ens.StreamContainer' >
 <assign property="callrequest" value="context.CreateStreamContainer(&quot;/home/irisowner/outgoing/100.req.txt&quot;)" action="set" />
@@ -22,7 +22,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <call name='call1' target='cWaitFile' async='1' xpos='200' ypos='350' >
 <annotation><![CDATA[指定されたファイルを待つ]]></annotation>
 <request type='Task.Request.WaitFile' >
-<assign property="callrequest.FileName" value="&quot;/home/irisowner/incoming/in/100.res.txt&quot;" action="set" />
+<assign property="callrequest.FileName" value="&quot;/home/sftp_user1/incoming/in/100.res.txt&quot;" action="set" />
 </request>
 <response type='Task.Response.WaitFile' />
 </call>

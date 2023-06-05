@@ -57,17 +57,17 @@ XData ProductionDefinition
   </Item>
   <Item Name="job6waitfolder" Category="job" ClassName="Task.Process.job6waitfolder" PoolSize="0" Enabled="true" Foreground="false" Comment="BP内で指定した全フォルダに何某かのファイル(群)が投入されるまで、処理を保留する。" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="Target1_REST" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="2" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+  <Item Name="Task1_REST" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="2" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="Credentials">default</Setting>
     <Setting Target="Adapter" Name="HTTPPort">52773</Setting>
-    <Setting Target="Adapter" Name="HTTPServer">task</Setting>
+    <Setting Target="Adapter" Name="HTTPServer">task1</Setting>
     <Setting Target="Adapter" Name="URL">/csp/task/api/RunTask</Setting>
     <Setting Target="Host" Name="AlertOnError">1</Setting>
     <Setting Target="Host" Name="AlertGroups">TaskGroup</Setting>
   </Item>
   <Item Name="TaskComplete" Category="" ClassName="Task.Service.TaskCompleteRest" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="Target2_REST" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="2" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+  <Item Name="Task2_REST" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="2" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="Credentials">default</Setting>
     <Setting Target="Adapter" Name="HTTPPort">52773</Setting>
     <Setting Target="Adapter" Name="HTTPServer">task2</Setting>
@@ -75,12 +75,6 @@ XData ProductionDefinition
     <Setting Target="Adapter" Name="RegistryID"></Setting>
     <Setting Target="Host" Name="AlertOnError">1</Setting>
     <Setting Target="Host" Name="AlertGroups">TaskGroup</Setting>
-  </Item>
-  <Item Name="EnsLib.File.PassthroughService" Category="" ClassName="EnsLib.File.PassthroughService" PoolSize="1" Enabled="false" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
-    <Setting Target="Host" Name="TargetConfigNames">File</Setting>
-    <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/incoming/arc/</Setting>
-    <Setting Target="Adapter" Name="FilePath">/home/irisowner/incoming/in/</Setting>
-    <Setting Target="Adapter" Name="FileSpec">*.test</Setting>
   </Item>
   <Item Name="SFTP" Category="" ClassName="EnsLib.FTP.PassthroughOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="Credentials">sftp</Setting>
@@ -92,9 +86,9 @@ XData ProductionDefinition
     <Setting Target="Host" Name="AlertGroups">FileGroup</Setting>
     <Setting Target="Host" Name="Filename">%f</Setting>
   </Item>
-  <Item Name="Target1_SFTP" Category="" ClassName="EnsLib.FTP.PassthroughOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+  <Item Name="Task1_SFTP" Category="" ClassName="EnsLib.FTP.PassthroughOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="Credentials">task_sftp</Setting>
-    <Setting Target="Adapter" Name="FTPServer">task</Setting>
+    <Setting Target="Adapter" Name="FTPServer">task1</Setting>
     <Setting Target="Adapter" Name="FTPPort"></Setting>
     <Setting Target="Adapter" Name="Protocol">SFTP</Setting>
     <Setting Target="Adapter" Name="FilePath">/irisowner/incoming/in/</Setting>
@@ -102,7 +96,7 @@ XData ProductionDefinition
     <Setting Target="Host" Name="AlertGroups">FileGroup</Setting>
     <Setting Target="Host" Name="Filename">%f</Setting>
   </Item>
-  <Item Name="Target2_SFTP" Category="" ClassName="EnsLib.FTP.PassthroughOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+  <Item Name="Task2_SFTP" Category="" ClassName="EnsLib.FTP.PassthroughOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="Credentials">task_sftp</Setting>
     <Setting Target="Adapter" Name="FTPServer">task2</Setting>
     <Setting Target="Adapter" Name="FTPPort"></Setting>
@@ -112,14 +106,14 @@ XData ProductionDefinition
     <Setting Target="Host" Name="AlertGroups">FileGroup</Setting>
     <Setting Target="Host" Name="Filename">%f</Setting>
   </Item>
-  <Item Name="File" Category="" ClassName="Task.Process.File" PoolSize="0" Enabled="false" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
-  </Item>
   <Item Name="EnsLib.EMail.AlertOperation" Category="" ClassName="EnsLib.EMail.AlertOperation" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="Defer" Category="" ClassName="Task.Operation.Defer" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="WaitForFolders" Category="" ClassName="Task.Service.WaitForFolders" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
     <Setting Target="Adapter" Name="FilePath">/home/irisowner/incoming/common</Setting>
+    <Setting Target="Adapter" Name="SubdirectoryLevels">1</Setting>
+    <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/incoming/common-arc/</Setting>
   </Item>
   <Item Name="WaitForFile" Category="" ClassName="Task.Service.WaitForFile" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
   </Item>

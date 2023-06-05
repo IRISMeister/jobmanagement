@@ -16,7 +16,7 @@ Method OnProcessInput(pInput As %Stream.Object, Output pOutput As %RegisteredObj
 		Set pResponse.Folder=folder
 
 		; このBSが完了するとトリガファイルが削除されてしまう(ソースシステムからの次回の送信が始まる可能性が出てくる)ので
-		; OnProcessInput()完了前に、処理相対象のファイルを確定する。
+		; OnProcessInput()完了前に、処理対象のファイル群を確定し、メッセージに含める。
 		Set stmt=##class(%SQL.Statement).%New()
 		Set tSC=stmt.%PrepareClassQuery("%Library.File","FileSet")
 		Set rs=stmt.%Execute(folder)

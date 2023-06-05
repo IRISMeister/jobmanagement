@@ -63,7 +63,7 @@ callrs(loop=0) public {
 #; あるいは、専用のJOBをEnsemble外に用意するか。
 #; あるいは、tcp_tw_reuseを設定(Linux), TcpTimedWaitDelay(Windows)で調整するか。
 #; d call^timing()
-call(loop=1,target="Target1_REST",taskname="MyTask.NewClass1") public {
+call(loop=1,target="Task1_REST",taskname="MyTask.NewClass1") public {
 	Set st=$ZH
 	Set tSC = ##class(Ens.Director).CreateBusinessService("Test.Service.Call",.tService)
 	If ($IsObject(tService)) {
@@ -87,7 +87,7 @@ osdir() public {
 	If ($IsObject(tService)) {
 		Set input=##class(Task.Request.CallTask).%New()
 		Set input.SessionId=1
-		Set input.Target="Target1_REST"
+		Set input.Target="Task1_REST"
 		Set input.TaskName="MyTask.OSDir"
 		Set input.Deferred=0
 		Set input.P1="c:\temp\"

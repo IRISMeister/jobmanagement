@@ -8,19 +8,52 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install sftp
 RUN apt-get update && apt-get install -y ssh sshpass zip unzip
 RUN echo "\n\
-Match group sftp \n\
-ChrootDirectory /home \n\
-X11Forwarding no \n\
-AllowTcpForwarding no \n\
-ForceCommand internal-sftp \n\
+Match user irisowner \n\
+ ChrootDirectory /home \n\
+ X11Forwarding no \n\
+ AllowTcpForwarding no \n\
+ ForceCommand internal-sftp -u 2 \n\
+Match user sftp_user \n\
+ ChrootDirectory /home/sftp_user \n\
+ X11Forwarding no \n\
+ AllowTcpForwarding no \n\
+ ForceCommand internal-sftp -u 2 \n\
+Match user sftp_user1 \n\
+ ChrootDirectory /home/sftp_user1 \n\
+ X11Forwarding no \n\
+ AllowTcpForwarding no \n\
+ ForceCommand internal-sftp -u 2 \n\
+Match user sftp_user2 \n\
+ ChrootDirectory /home/sftp_user2 \n\
+ X11Forwarding no \n\
+ AllowTcpForwarding no \n\
+ ForceCommand internal-sftp -u 2 \n\
+Match user sftp_user3 \n\
+ ChrootDirectory /home/sftp_user3 \n\
+ X11Forwarding no \n\
+ AllowTcpForwarding no \n\
+ ForceCommand internal-sftp -u 2 \n\
 " >> /etc/ssh/sshd_config
-RUN addgroup sftp && useradd -m sftp_user -g sftp && echo "sftp_user:sftp_password" | chpasswd && chmod 777 /home/sftp_user/ 
-RUN echo "irisowner:irisowner" | chpasswd && usermod -aG sftp irisowner
-RUN useradd -m sftp_user1 -g sftp && echo "sftp_user1:sftp_password" | chpasswd  
-RUN useradd -m sftp_user2 -g sftp && echo "sftp_user2:sftp_password" | chpasswd  
-RUN useradd -m sftp_user3 -g sftp && echo "sftp_user3:sftp_password" | chpasswd  
+RUN addgroup sftp_user && useradd -m sftp_user -g sftp_user && echo "sftp_user:sftp_password" | chpasswd && chown root:root /home/sftp_user && chmod 655 /home/sftp_user
+RUN addgroup sftp_user1 && useradd -m sftp_user1 -g sftp_user1 && echo "sftp_user1:sftp_password" | chpasswd && chown root:root /home/sftp_user1 && chmod 655 /home/sftp_user1
+RUN addgroup sftp_user2 && useradd -m sftp_user2 -g sftp_user2 && echo "sftp_user2:sftp_password" | chpasswd && chown root:root /home/sftp_user2 && chmod 655 /home/sftp_user2 
+RUN addgroup sftp_user3 && useradd -m sftp_user3 -g sftp_user3 && echo "sftp_user3:sftp_password" | chpasswd && chown root:root /home/sftp_user3 && chmod 655 /home/sftp_user3 
+RUN mkdir -p /home/sftp_user/incoming/in  /home/sftp_user/incoming/arc  /home/sftp_user/incoming/folder   /home/sftp_user/incoming/common  && chown -R sftp_user:sftp_user /home/sftp_user/incoming && chmod g+w /home/sftp_user/incoming/*
+RUN mkdir -p /home/sftp_user1/incoming/in /home/sftp_user1/incoming/arc /home/sftp_user1/incoming/folder1 /home/sftp_user1/incoming/common && chown -R sftp_user1:sftp_user1 /home/sftp_user1/incoming && chmod g+w /home/sftp_user1/incoming/*
+RUN mkdir -p /home/sftp_user2/incoming/in /home/sftp_user2/incoming/arc /home/sftp_user2/incoming/folder2 /home/sftp_user2/incoming/common && chown -R sftp_user2:sftp_user2 /home/sftp_user2/incoming && chmod g+w /home/sftp_user2/incoming/*
+RUN mkdir -p /home/sftp_user3/incoming/in /home/sftp_user3/incoming/arc /home/sftp_user3/incoming/folder3 /home/sftp_user3/incoming/common && chown -R sftp_user3:sftp_user3 /home/sftp_user3/incoming && chmod g+w /home/sftp_user3/incoming/*
+RUN addgroup sftp && echo "irisowner:irisowner" | chpasswd && usermod -aG sftp,sftp_user,sftp_user1,sftp_user2,sftp_user3 irisowner
+
 
 USER irisowner
+#RUN mkdir -p incoming/in && mkdir -p incoming/arc && mkdir -p incoming/folder1 && mkdir -p incoming/folder2 &&  mkdir -p incoming/common && mkdir -p outgoing 
+RUN mkdir -p incoming/in incoming/arc incoming/folder1 incoming/folder2 incoming/common incoming/common-arc outgoing 
+
+# Used to watch semaphor files for BS/WaitForFolders 
+RUN ln -s /home/sftp_user/incoming/common /home/irisowner/incoming/common/sftp_user
+RUN ln -s /home/sftp_user1/incoming/common /home/irisowner/incoming/common/sftp_user1
+RUN ln -s /home/sftp_user2/incoming/common /home/irisowner/incoming/common/sftp_user2
+RUN ln -s /home/sftp_user3/incoming/common /home/irisowner/incoming/common/sftp_user3
 
 ENV INSTSCRDIR=task
 ENV SRCDIR=task/src
@@ -35,8 +68,8 @@ RUN  iris start $ISC_PACKAGE_INSTANCENAME \
 
 #++ until imageBuildSteps.sh is chnaged++
 # imageBuildSteps makes appuser 'ForceChangePassword' state....
-RUN mkdir -p incoming/in && mkdir -p incoming/arc && mkdir -p incoming/folder1 && mkdir -p incoming/folder2 &&  mkdir -p incoming/common && mkdir -p outgoing \
- && iris start $ISC_PACKAGE_INSTANCENAME nostu quietly \
+#RUN mkdir -p incoming/in && mkdir -p incoming/arc && mkdir -p incoming/folder1 && mkdir -p incoming/folder2 &&  mkdir -p incoming/common && mkdir -p outgoing \
+RUN iris start $ISC_PACKAGE_INSTANCENAME nostu quietly \
  && printf "kill ^%%SYS(\"JOURNAL\") kill ^SYS(\"NODE\") h\n" | iris session $ISC_PACKAGE_INSTANCENAME -B | cat \
  && iris stop $ISC_PACKAGE_INSTANCENAME quietly bypass \
  && rm -f $ISC_PACKAGE_INSTALLDIR/mgr/journal.log \
@@ -54,4 +87,4 @@ USER root
 # need to be root because $SRCDIR's owner is root:root.
 RUN rm -rf $SRCDIR
 USER irisowner
-RUN echo $COMMIT_ID > $HOME/commit.txt
+RUN echo $COMMIT_ID > $HOME/commit.txt && chmod 664 commit.txt
