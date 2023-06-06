@@ -1,7 +1,11 @@
 Class Task.Response.WaitFile Extends Ens.Response
 {
 
-Property FileName As %String;
+Property TaskStatus As %String;
+
+Property TaskErrorMessage As %String(MAXLEN = 2000);
+
+Property FileName As %String(MAXLEN = 2000);
 
 Storage Default
 {
@@ -15,6 +19,12 @@ Storage Default
 </Value>
 <Value name="3">
 <Value>FileName</Value>
+</Value>
+<Value name="4">
+<Value>TaskStatus</Value>
+</Value>
+<Value name="5">
+<Value>TaskErrorMessage</Value>
 </Value>
 </Data>
 <DefaultData>WaitFolderDefaultData</DefaultData>

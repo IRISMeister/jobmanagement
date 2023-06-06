@@ -1,6 +1,12 @@
 Class Task.Context.Custom Extends Ens.BP.Context
 {
 
+Property FileName As %String(MAXLEN = 2000);
+
+Property TaskStatus As %String(MAXLEN = 50);
+
+Property TaskErrorMessage As %String(MAXLEN = 2000);
+
 Property JobStatus As %String(MAXLEN = 50);
 
 Property LastTaskName As %String(MAXLEN = 50);
@@ -91,6 +97,15 @@ Storage Default
 </Value>
 <Value name="11">
 <Value>TargetFiles</Value>
+</Value>
+<Value name="12">
+<Value>TaskStatus</Value>
+</Value>
+<Value name="13">
+<Value>TaskErrorMessage</Value>
+</Value>
+<Value name="14">
+<Value>FileName</Value>
 </Value>
 </Data>
 <DefaultData>CustomDefaultData</DefaultData>

@@ -17,6 +17,8 @@ Method OnProcessInput(pInput As %RegisteredObject, Output pOutput As %Registered
 
 			Set pResponse=##class(Task.Response.WaitFile).%New()
 			Set pResponse.FileName=filename
+			Set pResponse.TaskStatus="OK"
+
 			Set tSC=..SendDeferredResponse(rs.token,pResponse)
 
 		}

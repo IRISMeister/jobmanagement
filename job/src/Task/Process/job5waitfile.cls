@@ -10,24 +10,39 @@ Storage Default
 /// BPL Definition
 XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 {
-<process language='objectscript' request='Task.Request.CallJob' response='Ens.Response' contextsuperclass='Task.Context.Custom' height='2000' width='2000' >
-<sequence xend='200' yend='650' >
-<call name='sendfile' target='Task1_SFTP' async='0' timeout='5' xpos='200' ypos='250' >
-<annotation><![CDATA[ファイルを送信]]></annotation>
-<request type='Ens.StreamContainer' >
-<assign property="callrequest" value="context.CreateStreamContainer(&quot;/home/irisowner/outgoing/100.req.txt&quot;)" action="set" />
-</request>
-<response type='Ens.Response' />
-</call>
-<call name='call1' target='cWaitFile' async='1' xpos='200' ypos='350' >
+<process language='objectscript' request='Task.Request.CallJob' response='Task.Response.CallJob' contextsuperclass='Task.Context.Custom' height='2000' width='2000' >
+<sequence xend='200' yend='1150' >
+<scope xpos='200' ypos='250' xend='200' yend='950' >
+<call name='call1' target='cWaitFile' async='0' xpos='200' ypos='350' >
 <annotation><![CDATA[指定されたファイルを待つ]]></annotation>
 <request type='Task.Request.WaitFile' >
 <assign property="callrequest.FileName" value="&quot;/home/sftp_user1/incoming/in/100.res.txt&quot;" action="set" />
 </request>
-<response type='Task.Response.WaitFile' />
+<response type='Task.Response.WaitFile' >
+<assign property="context.TaskStatus" value="callresponse.TaskStatus" action="set" />
+<assign property="context.TaskErrorMessage" value="callresponse.TaskErrorMessage" action="set" />
+<assign property="context.FileName" value="callresponse.FileName" action="set" />
+</response>
 </call>
-<sync calls='call1' type='all' xpos='200' ypos='450' />
-<trace value='"BP処理再開"' xpos='200' ypos='550' />
+<if condition='context.TaskStatus="OK"' xpos='200' ypos='450' xend='200' yend='700' >
+<true>
+<code xpos='470' ypos='600' >
+<annotation><![CDATA[得たファイルを処理する]]></annotation>
+<![CDATA[ Do ##class(%File).Delete(context.FileName)]]>
+</code>
+</true>
+<false>
+<throw fault='"JobFault:"_context.TaskErrorMessage' xpos='200' ypos='600' />
+</false>
+</if>
+<faulthandlers>
+<catchall xpos='200' ypos='800' xend='200' yend='450' >
+<assign property="response.JobStatus" value="&quot;NG&quot;" action="set" xpos='200' ypos='250' />
+<assign property="response.JobErrorMessage" value="$System.Status.GetErrorCodes(..%Context.%LastError)_&quot;:&quot;_$System.Status.GetOneStatusText(..%Context.%LastError)" action="set" xpos='200' ypos='350' />
+</catchall>
+</faulthandlers>
+</scope>
+<assign property="response.EndTime" value="$ZDATETIME($H,3)" action="set" xpos='200' ypos='1050' />
 </sequence>
 </process>
 }

@@ -1,7 +1,11 @@
 Class Task.Response.WaitFolder Extends Ens.Response
 {
 
-Property Folder As %String;
+Property TaskStatus As %String;
+
+Property TaskErrorMessage As %String(MAXLEN = 2000);
+
+Property Folder As %String(MAXLEN = 2000);
 
 Property Files As list Of %String;
 
@@ -14,6 +18,12 @@ Storage Default
 </Value>
 <Value name="2">
 <Value>Files</Value>
+</Value>
+<Value name="3">
+<Value>TaskStatus</Value>
+</Value>
+<Value name="4">
+<Value>TaskErrorMessage</Value>
 </Value>
 </Data>
 <DefaultData>WaitFolderDefaultData</DefaultData>
