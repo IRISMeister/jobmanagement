@@ -34,28 +34,28 @@ $ docker compose down
 
 ### 起動方法
 
-[JOB1](job/src/SysTask/Job1.cls)は、コンテナ起動直後より[タスクマネージャ](http://localhost:9203/csp/sys/op/%25CSP.UI.Portal.TaskInfo.zen?$ID1=1000)->[BP/Initiator](job/src/Task/Service/Initiator.cls)経由で5分間隔で自動実行されています。
+[JOB1](../job/src/SysTask/Job1.cls)は、コンテナ起動直後より[タスクマネージャ](http://localhost:9203/csp/sys/op/%25CSP.UI.Portal.TaskInfo.zen?$ID1=1000)->[BP/Direct](../job/src/Task/Service/Direct.cls)経由で5分間隔で自動実行されています。
 
 ### 処理内容
 
 BP/CallTask経由でtask1(ターゲット:BO/Task1_REST,MyTask.NewClass1), task2(ターゲット:BO/Task1_REST,MyTask.NewClass2), task3(ターゲット:BO/Task2_REST,MyTask.NewClass3)を順番に同期実行。ただし、task3だけは遅延実行(taskインスタンス上でのタスクをJOBコマンドで実行し、遅延応答(トークン)を返却します)を行っています。
 
-BO/Task1_RESTはRESTクライアントを使用して、IRISサーバ#1のRESTサービスを起動します。 その結果、IRISサーバ#1では[MyTask.NewClass1](task/src/MyTask/NewClass1.cls)と[MyTask.NewClass2](task/src/MyTask/NewClass2.cls)が、各々実行されます。その動作結果はグローバルに保存されます。 
+BO/Task1_RESTはRESTクライアントを使用して、IRISサーバ#1のRESTサービスを起動します。 その結果、IRISサーバ#1では[MyTask.NewClass1](../task/src/MyTask/NewClass1.cls)と[MyTask.NewClass2](../task/src/MyTask/NewClass2.cls)が、各々実行されます。その動作結果はグローバルに保存されます。 
 
-BO/Task2_RESTはRESTクライアントを使用して、IRISサーバ#2のRESTサービスを起動します。 その結果、IRISサーバ#2では[MyTask.NewClass3](task/src/MyTask/NewClass3.cls)が実行されます。その動作結果はグローバルに保存されます。 
+BO/Task2_RESTはRESTクライアントを使用して、IRISサーバ#2のRESTサービスを起動します。 その結果、IRISサーバ#2では[MyTask.NewClass3](../task/src/MyTask/NewClass3.cls)が実行されます。その動作結果はグローバルに保存されます。 
 
 
 ```mermaid
 sequenceDiagram
 
 participant /TaskComplete
-participant BS/Initiator
+participant BS/Direct
 participant BP/Job1
 participant BP/CallTask
 participant BO/Task1_REST
 participant BO/Task2_REST
 
-BS/Initiator->>+BP/Job1: Request
+BS/Direct->>+BP/Job1: Request
 
 BP/Job1->>+BP/CallTask: Task1@BO/Task1_REST
 
@@ -85,7 +85,7 @@ activate /TaskComplete
 deactivate /TaskComplete
 BP/CallTask-->>-BP/Job1: Response
 
-BP/Job1-->>-BS/Initiator: Response
+BP/Job1-->>-BS/Direct: Response
 ```
 
 ### 処理結果
@@ -344,7 +344,7 @@ sftp> put commit.txt incoming/in/100.res.txt
 docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/100.res.txt'
 ```
 
-その他のsftpユーザ
+使用可能なsftpユーザは下記の通り。
 ```
 docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
 docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user2@job
