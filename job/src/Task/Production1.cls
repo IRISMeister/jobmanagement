@@ -5,7 +5,7 @@ XData ProductionDefinition
 {
 <Production Name="Task.Production1" TestingEnabled="true" LogGeneralTraceEvents="true">
   <Description></Description>
-  <ActorPoolSize>30</ActorPoolSize>
+  <ActorPoolSize>5</ActorPoolSize>
   <Setting Target="Adapter" Name="AlertNotificationManager">Ens.Alerting.NotificationManager</Setting>
   <Setting Target="Adapter" Name="AlertNotificationOperation">Task.Operation.DefaultAlert</Setting>
   <Setting Target="Adapter" Name="AlertNotificationRecipients">test@localhost.localdomain</Setting>
@@ -55,7 +55,7 @@ XData ProductionDefinition
   </Item>
   <Item Name="job5waitfile" Category="job" ClassName="Task.Process.job5waitfile" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="job6waitfolder" Category="job" ClassName="Task.Process.job6waitfolder" PoolSize="0" Enabled="true" Foreground="false" Comment="BP内で指定した全フォルダに何某かのファイル(群)が投入されるまで、処理を保留する。" LogTraceEvents="false" Schedule="">
+  <Item Name="job6waitfolders" Category="job" ClassName="Task.Process.job6waitfolders" PoolSize="0" Enabled="true" Foreground="false" Comment="BP内で指定した全フォルダに何某かのファイル(群)が投入されるまで、処理を保留する。" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="Task1_REST" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="2" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="Credentials">default</Setting>

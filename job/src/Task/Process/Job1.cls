@@ -11,19 +11,13 @@ Storage Default
 XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 {
 <process language='objectscript' request='Task.Request.CallJob' response='Task.Response.CallJob' contextsuperclass='Task.Context.Custom' height='2700' width='2000' >
-<sequence xend='200' yend='2450' >
-<assign property="response.StartTime" value="$ZDATETIME($H,3)" action="set" xpos='200' ypos='250' disabled="true">
-<annotation><![CDATA[タイムスタンプをメッセージに記録]]></annotation>
-</assign>
-<assign property="context.SessionId" value="request.%Id()" action="set" xpos='200' ypos='350' disabled="true">
-<annotation><![CDATA[ターゲットに送るRESTに、ユニークID(プライマリメッセージのID)を付与することで、トラッキングを用意にすることを想定。]]></annotation>
-</assign>
-<code xpos='200' ypos='450' >
-<annotation><![CDATA[Customコードの例。無効化してある上記のassignと同等の機能をコードで実現したもの。]]></annotation>
+<sequence xend='200' yend='2250' >
+<code xpos='200' ypos='250' >
+<annotation><![CDATA[初期化]]></annotation>
 <![CDATA[ Do context.OnStart(request,response)]]>
 </code>
-<scope xpos='200' ypos='550' xend='200' yend='2250' >
-<call name='task1' target='cCallTask' async='0' xpos='200' ypos='650' >
+<scope xpos='200' ypos='350' xend='200' yend='2050' >
+<call name='task1' target='cCallTask' async='0' xpos='200' ypos='450' >
 <annotation><![CDATA[NewClass1@Task1_REST,同期
 ]]></annotation>
 <request type='Task.Request.CallTask' >
@@ -44,15 +38,15 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <assign property="context.R3" value="callresponse.R3" action="set" />
 </response>
 </call>
-<if condition='context.LastTaskStatus="OK"' xpos='200' ypos='750' xend='200' yend='1000' >
+<if condition='context.LastTaskStatus="OK"' xpos='200' ypos='550' xend='200' yend='800' >
 <annotation><![CDATA[タスクは正常終了したか？]]></annotation>
 <false>
-<throw fault='"TaskFault"' xpos='335' ypos='900' >
+<throw fault='"TaskFault"' xpos='335' ypos='700' >
 <annotation><![CDATA[例外を送出]]></annotation>
 </throw>
 </false>
 </if>
-<call name='task2' target='cCallTask' async='0' xpos='200' ypos='1100' >
+<call name='task2' target='cCallTask' async='0' xpos='200' ypos='900' >
 <annotation><![CDATA[NewClass2@Task2_REST,同期
 ]]></annotation>
 <request type='Task.Request.CallTask' >
@@ -73,12 +67,12 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <assign property="context.R3" value="callresponse.R3" action="set" />
 </response>
 </call>
-<if condition='context.LastTaskStatus="OK"' xpos='200' ypos='1200' xend='200' yend='1450' >
+<if condition='context.LastTaskStatus="OK"' xpos='200' ypos='1000' xend='200' yend='1250' >
 <false>
-<throw fault='"TaskFault"' xpos='335' ypos='1350' />
+<throw fault='"TaskFault"' xpos='335' ypos='1150' />
 </false>
 </if>
-<call name='task3' target='cCallTask' async='0' xpos='200' ypos='1550' >
+<call name='task3' target='cCallTask' async='0' xpos='200' ypos='1350' >
 <annotation><![CDATA[NewClass3@Task2_REST,同期+遅延]]></annotation>
 <request type='Task.Request.CallTask' >
 <assign property="callrequest.SessionId" value="context.SessionId" action="set" />
@@ -99,16 +93,16 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <assign property="context.R3" value="callresponse.R3" action="set" />
 </response>
 </call>
-<if condition='context.LastTaskStatus="OK"' xpos='200' ypos='1650' xend='200' yend='1900' >
+<if condition='context.LastTaskStatus="OK"' xpos='200' ypos='1450' xend='200' yend='1700' >
 <false>
-<throw fault='"TaskFault"' xpos='335' ypos='1800' />
+<throw fault='"TaskFault"' xpos='335' ypos='1600' />
 </false>
 </if>
-<assign property="response.JobStatus" value="&quot;OK&quot;" action="set" xpos='200' ypos='2000' >
+<assign property="response.JobStatus" value="&quot;OK&quot;" action="set" xpos='200' ypos='1800' >
 <annotation><![CDATA[ジョブの実行結果をOKに設定]]></annotation>
 </assign>
 <faulthandlers>
-<catchall xpos='200' ypos='2100' xend='200' yend='550' >
+<catchall xpos='200' ypos='1900' xend='200' yend='550' >
 <annotation><![CDATA[例外をキャッチする箇所。ジョブの実行結果をNGに設定している。]]></annotation>
 <trace value='"%LastError "_$System.Status.GetErrorCodes(..%Context.%LastError)_" : "_$System.Status.GetOneStatusText(..%Context.%LastError)' xpos='200' ypos='250' />
 <assign property="response.JobStatus" value="&quot;NG&quot;" action="set" xpos='200' ypos='350' />
@@ -116,7 +110,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </catchall>
 </faulthandlers>
 </scope>
-<assign property="response.EndTime" value="$ZDATETIME($H,3)" action="set" xpos='200' ypos='2350' >
+<assign property="response.EndTime" value="$ZDATETIME($H,3)" action="set" xpos='200' ypos='2150' >
 <annotation><![CDATA[タイムスタンプをメッセージに記録]]></annotation>
 </assign>
 </sequence>

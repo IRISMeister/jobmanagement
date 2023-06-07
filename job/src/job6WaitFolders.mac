@@ -3,7 +3,7 @@ main() public {
 	Set tSC = ##class(Ens.Director).CreateBusinessService("Direct",.tService)
 	If ($IsObject(tService)) {
 		Set input=##class(Task.Request.CallJob).%New()
-		Set input.JobName="job6waitfolder"
+		Set input.JobName="job6waitfolders"
 		Set tSC = tService.ProcessInput(input,.output)
 		zw output
 	}
