@@ -5,7 +5,7 @@ XData ProductionDefinition
 {
 <Production Name="Task.Production1" TestingEnabled="true" LogGeneralTraceEvents="true">
   <Description></Description>
-  <ActorPoolSize>5</ActorPoolSize>
+  <ActorPoolSize>2</ActorPoolSize>
   <Setting Target="Adapter" Name="AlertNotificationManager">Ens.Alerting.NotificationManager</Setting>
   <Setting Target="Adapter" Name="AlertNotificationOperation">Task.Operation.DefaultAlert</Setting>
   <Setting Target="Adapter" Name="AlertNotificationRecipients">test@localhost.localdomain</Setting>
@@ -19,11 +19,11 @@ XData ProductionDefinition
   </Item>
   <Item Name="Direct" Category="" ClassName="Task.Service.Direct" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="cCallTask" Category="" ClassName="Task.Process.cCallTask" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="cCallTask" Category="" ClassName="Task.Process.cCallTask" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="cWaitFile" Category="" ClassName="Task.Process.cWaitFile" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="cWaitFile" Category="" ClassName="Task.Process.cWaitFile" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="cWaitFolder" Category="" ClassName="Task.Process.cWaitFolder" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="cWaitFolder" Category="" ClassName="Task.Process.cWaitFolder" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="Ens.Alert" Category="" ClassName="Ens.Alerting.AlertManager" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
     <Setting Target="Host" Name="CreateManagedAlertRule">Task.Rule.ManagedAlert</Setting>
@@ -116,8 +116,19 @@ XData ProductionDefinition
     <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/incoming/common-arc/</Setting>
   </Item>
   <Item Name="WaitForFile" Category="" ClassName="Task.Service.WaitForFile" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
+    <Setting Target="Adapter" Name="FilePath">/home/sftp_user1/incoming/in/</Setting>
   </Item>
   <Item Name="Archive" Category="" ClassName="Task.Operation.Archive" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
+  <Item Name="WaitForRemoteFile" Category="" ClassName="Task.Service.WaitForRemoteFile" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+    <Setting Target="Adapter" Name="Credentials">task_sftp</Setting>
+    <Setting Target="Adapter" Name="FTPServer">task1</Setting>
+    <Setting Target="Adapter" Name="Protocol">SFTP</Setting>
+    <Setting Target="Adapter" Name="FilePath">/home/irisowner/outgoing/</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*</Setting>
+    <Setting Target="Adapter" Name="Charset">@UTF8</Setting>
+  </Item>
+  <Item Name="job5waitremotefile" Category="" ClassName="Task.Process.job5waitremotefile" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
 </Production>
 }

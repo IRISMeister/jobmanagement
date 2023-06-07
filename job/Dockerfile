@@ -8,11 +8,6 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install sftp
 RUN apt-get update && apt-get install -y ssh sshpass zip unzip
 RUN echo "\n\
-Match user irisowner \n\
- ChrootDirectory /home \n\
- X11Forwarding no \n\
- AllowTcpForwarding no \n\
- ForceCommand internal-sftp -u 2 \n\
 Match user sftp_user \n\
  ChrootDirectory /home/sftp_user \n\
  X11Forwarding no \n\

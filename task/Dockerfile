@@ -9,11 +9,6 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install sftp
 RUN apt-get update && apt-get install -y ssh sshpass
 RUN echo "\n\
-Match user irisowner \n\
- ChrootDirectory /home \n\
- X11Forwarding no \n\
- AllowTcpForwarding no \n\
- ForceCommand internal-sftp -u 2 \n\
 Match user sftp_user \n\
  ChrootDirectory /home/sftp_user \n\
  X11Forwarding no \n\
@@ -60,7 +55,7 @@ RUN  iris start $ISC_PACKAGE_INSTANCENAME \
 
 #++ until imageBuildSteps.sh is chnaged++
 # imageBuildSteps makes appuser 'ForceChangePassword' state....
-RUN mkdir -p incoming/in \
+RUN mkdir -p incoming/in outgoing \
  && iris start $ISC_PACKAGE_INSTANCENAME nostu quietly \
  && printf "kill ^%%SYS(\"JOURNAL\") kill ^SYS(\"NODE\") h\n" | iris session $ISC_PACKAGE_INSTANCENAME -B | cat \
  && iris stop $ISC_PACKAGE_INSTANCENAME quietly bypass \

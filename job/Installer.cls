@@ -42,7 +42,7 @@ ClassMethod setup(Namespace As %String, srcdir As %String) As %Status
 
     Set tSC=##class(Security.Users).UnExpireUserPasswords("*")
 
-	  #; /csp/testをAnalytics有効に。(Workflow portal使用のため)
+	  #; /csp/jobをAnalytics有効に。(Workflow portal使用のため)
     Set tSC = ##Class(Security.Applications).Get(webapp,.props)
     Set props("DeepSeeEnabled")=1
     Set tSC = ##Class(Security.Applications).Modify(webapp,.props)

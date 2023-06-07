@@ -8,6 +8,8 @@ services:
     ports:
       - 52873:52773
       - 9103:1972
+      - "63300:63300"  # foreground
+      - "63301:63301"  # foreground
     environment:
       - TZ=JST-9
       - ISC_CPF_MERGE_FILE=/ISC/merge.cpf

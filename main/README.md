@@ -350,8 +350,22 @@ docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyCheck
 docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user2@job
 docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user3@job
 sftp> put commit.txt incoming/in/100.res.txt
-
 ```
+
+WaitForRemoteFileの場合
+
+外部システムが自分のローカルフィルダにファイルを作成した状態を再現
+```
+docker compose exec task1 bash -c 'echo "abc" > /home/irisowner/outgoing/100.res.txt'
+```
+
+Jobサーバからは下記のように見える。
+```
+docker compose exec job sshpass -p "irisowner" sftp -o "StrictHostKeyChecking no" irisowner@task1
+sftp> ls outgoing
+outgoing/100.res.txt
+```
+
 
 
 - 複数Folder待ちのテスト

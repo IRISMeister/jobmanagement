@@ -1,5 +1,5 @@
 /// BPのテンプレート
-Class Task.Process.cWaitFile Extends Ens.BusinessProcessBPL [ ClassType = persistent, ProcedureBlock ]
+Class Task.Process.cWaitRemoteFile Extends Ens.BusinessProcessBPL [ ClassType = persistent, ProcedureBlock ]
 {
 
 Storage Default
