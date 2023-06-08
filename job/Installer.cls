@@ -80,10 +80,6 @@ ClassMethod setup(Namespace As %String, srcdir As %String) As %Status
     Set tSC=##class(Ens.Config.Credentials).SetCredential("task_sftp","irisowner","irisowner",1)
     $$$ThrowOnError(tSC)
 
-    #; WSL2環境でフォアグラウンド実行を有効化
-    Set ^Ens.Debug("ForegroundIPType")="custom"
-    Set ^Ens.Debug("ForegroundIP")="localhost"
-
     #;IRISタスクを追加
     Set task = ##class(%SYS.Task).%New()
     Set task.Name = "Job1"
@@ -103,6 +99,11 @@ ClassMethod setup(Namespace As %String, srcdir As %String) As %Status
     Set task.StartDate = +$H
     Set tSC = task.%Save()	
     $$$ThrowOnError(tSC)
+
+    #; WSL2環境でフォアグラウンド実行を有効化
+    Set ^Ens.Debug("ForegroundIPType")="custom"
+    Set ^Ens.Debug("ForegroundIP")="localhost"
+
 
   } Catch(e) {
 	  Set tSC=e.AsStatus()

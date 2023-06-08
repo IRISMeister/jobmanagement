@@ -15,6 +15,10 @@
 		{
 			"name": "sftp",
 			"path": "sftp"
+		},
+		{
+			"name": "iris-job-local-serverside:JOB",
+			"uri": "isfs://iris-job-local:job"
 		}
 	],
 	"settings": {
@@ -37,7 +41,19 @@
 				},
 				"username": "SuperUser",
 				"password": "SYS"
-			  }
+			  },
+			  "iris-job-local": {
+				"webServer": {
+					"scheme": "http",
+					"host": "localhost",
+					"port": 52774
+				},
+				"username": "SuperUser",
+				"password": "SYS"
+			},
+		},
+		"objectscript.conn": {
+			"active": true
 		}
 	}
 }
