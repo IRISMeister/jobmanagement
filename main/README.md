@@ -264,26 +264,24 @@ $ docker compose exec task1 iris stop iris quietly
 
 BPの処理については、先ほどと同様に、ユーザポータルでワークフロー受信箱に届いているメッセージを選択し、対処方法を指示すれば、処理が再開します。
 
-## sftp
+## ファイル待ち
 
-EnsLib.File.PassthroughServiceのトリガ
+様々なファイル待ちのケース。
 
-```
-docker compose exec job touch /home/irisowner/incoming/in/a.test
-```
+1. 単一ローカルファイル待ち
+job5File
+2. 複数ローカルファイル待ち
+job6Files
+3. 複数ローカルフォルダ待ち
+job7Folders
+4. 単一SFTPファイル待ち
+job8RemoteFile
+5. 複数SFTPファイル待ち
+job9RemoteFiles
+6. 複数SFTPフォルダ待ち(未完)
+job10RemoteFolders
 
-BP.JobSendFileを試作中
-やりたいのはBPで作成したStreamContainerを使ってSFTPすること。
-ステータスのやり取りをCallTaskと共通化したいので、SendFileというBPを作ったほうが良さげ。
-Jobx 
--> Call SendFile
---> Stream作成や指定されたターゲット(この場合SFTPオペレーション)へのCall,応答(ヘッダのみ)からのステータス取得、
--> Call CallTask
-
-
-複数フォルダの監視と全てそろったときにBPを継続する仕組みを試作中
-
-フォルダ監視は割り切って、送信元がトリガとなるファイルを作成してくれるものとする。
+フォルダ待ちは割り切って、送信元がトリガとなるファイル(*.sem)を作成してくれるものとする。
 理由：受信側で行うと、監視フォルダが増えると高くつく。FileWatcher的アプローチもダウン時に取りこぼしが生じるので不安定になる。
 つまり、送信元が下記のようなファイルを作成することを期待する。
 
@@ -306,8 +304,96 @@ common/folderB.txt
 
 これならcommon/をEnslib.Fileで監視するだけで済む。
 
-課題としては、各システム別に用意したFTPアカウントが共通の場所(common/)を更新する必要が生じること。
-コンテナ版IRISは非rootで動作しているので、異なるFTPユーザがオーナになったフォルダやファイルをそのままではREAD/WRITE(DELETE)出来ないこと。
+各外部システム別に用意したFTPアカウント(sftp_user1など)が共通の場所(common/)を更新する必要が生じる。適切なアクセス権設定を要する。
+
+# 単一ローカルファイル待ち
+
+手元ファイルを外部にSFTPするなど(その他RESTでも何でも良い)をトリガに、その応答がしばらくしてから(非同期で)ローカルファイルにPutされるような連携を想定。
+
+```
+docker compose exec job iris session iris -UJOB job5WaitFile
+```
+あるいは、job5waitfileをSMPでTEST実行する。いずれもブロックされる。
+
+下記のSQLで待ちファイルが登録されていることを確認で出来る。
+```
+SELECT FileName, Token FROM Task_Data.WaitFile
+FileName	Token
+/home/sftp_user1/incoming/in/100.res.txt    5|Task.Production1
+```
+待っているファイルを作成してあげることでブロック状態が解消される。ファイル名が一致していれば、内容は何でも良い。
+
+1. 外部システムの動作を、task1からsftp経由でjobにファイルをputすることで再現する方法
+```
+docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
+sftp> put commit.txt incoming/in/100.res.txt
+```
+
+2. 待っているファイルを直接ローカルに作成する方法。
+```
+docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/100.res.txt'
+docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/200.res.txt' 
+```
+
+
+# 複数ローカルファイル待ち
+
+1. 外部システムの動作を、task1からsftp経由でjobにファイルをputすることで再現する方法
+```
+docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
+sftp> put commit.txt incoming/in/100.res.txt
+sftp> put commit.txt incoming/in/200.res.txt
+```
+
+2. 待っているファイル群を直接ローカルに作成する方法。
+```
+docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/100.res.txt'
+docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/200.res.txt' 
+```
+
+# 複数ローカルフォルダ待ち
+
+1. 外部システムの動作を、task1およびtask2からsftp経由でjobにファイルをputすることで再現する方法
+
+```
+docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
+sftp> put commit.txt incoming/folder1/1.txt
+sftp> put commit.txt incoming/folder1/2.txt
+sftp> put commit.txt incoming/folder1/3.txt
+sftp> put commit.txt incoming/folder1/4.txt
+sftp> ! echo "/home/sftp_user1/incoming/folder1/" > done.sem
+sftp> put done.sem incoming/common/done.sem
+docker compose exec task2 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user2@job
+sftp> put commit.txt incoming/folder1/1.txt
+sftp> put commit.txt incoming/folder1/2.txt
+sftp> put commit.txt incoming/folder1/3.txt
+sftp> ! echo "/home/sftp_user2/incoming/folder1/" > done.sem
+sftp> put done.sem incoming/common/done.sem
+```
+
+2. 待っているフォルダ群を直接ローカルに作成する方法。
+
+```
+./commit-files.sh
+```
+
+# 単一SFTPファイル待ち
+
+```
+docker compose exec task1 bash -c 'echo "あいうえお" > /home/irisowner/outgoing/100.res.txt'
+```
+
+# 複数SFTPファイル待ち
+
+```
+docker compose exec task1 bash -c 'echo "あいうえお" > /home/irisowner/outgoing/100.res.txt'
+docker compose exec task2 bash -c 'echo "あいうえお" > /home/irisowner/outgoing/100.res.txt'
+```
+
+# 複数SFTPフォルダ待ち(未完)
+
+
+
 
 ------------------------------------------
 テスト手順
@@ -342,6 +428,7 @@ sftp> put commit.txt incoming/in/100.res.txt
 2. 直接待っているファイルを作成。
 ```
 docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/100.res.txt'
+docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/200.res.txt' 
 ```
 
 使用可能なsftpユーザは下記の通り。
@@ -356,7 +443,8 @@ WaitForRemoteFileの場合
 
 外部システムが自分のローカルフィルダにファイルを作成した状態を再現
 ```
-docker compose exec task1 bash -c 'echo "abc" > /home/irisowner/outgoing/100.res.txt'
+docker compose exec task1 bash -c 'echo "あいうえお" > /home/irisowner/outgoing/100.res.txt'
+docker compose exec task2 bash -c 'echo "あいうえお" > /home/irisowner/outgoing/100.res.txt'
 ```
 
 Jobサーバからは下記のように見える。
@@ -366,6 +454,7 @@ sftp> ls outgoing
 outgoing/100.res.txt
 ```
 
+単一のBS/(FTP)から複数のFTPサーバに対してクエリ実行やGetを実行できないので、待ち合わせの対象となるFTPサーバは1台のみに限定される。
 
 
 - 複数Folder待ちのテスト
@@ -393,12 +482,21 @@ FolderName	Token
 ./commit-files.sh
 ```
 
-課題
+WaitForRemoteFoldereの場合
+
+単一のBS/(FTP)から複数のFTPサーバに対してクエリ実行やGetを実行できないので、待ち合わせの対象となるFTPサーバは1台のみに限定される。
+
+
+
+# FTPの課題
 
 異なるftpアカウント(外部システム)が共通のフォルダ(/home/irisowner/incoming/common)に出力する(できる)のは、あまり好ましくない。
 (相互に破壊しかねない)
 
-セマフォファイルの監視フォルダをシンボリックリンクで作成
+解決策
+
+セマフォファイルの監視フォルダをシンボリックリンクで作成する
+```
 docker compose exec -u root job bash
 $ ln -s /home/sftp_user/incoming/in /home/irisowner/incoming/common/sftp_user
 $ ln -s /home/sftp_user1/incoming/in /home/irisowner/incoming/common/sftp_user1
@@ -406,7 +504,7 @@ $ ln -s /home/sftp_user2/incoming/in /home/irisowner/incoming/common/sftp_user2
 $ ln -s /home/sftp_user3/incoming/in /home/irisowner/incoming/common/sftp_user3
 
 docker compose exec job bash
-$ ll /home/irisowner/incoming/common <=このサブフォルダを単一のBSによる監視対象にする
+$ ll /home/irisowner/incoming/common <=このサブフォルダを単一のBSによる監視対象とする
 total 12
 drwxr-xr-x 1 irisowner irisowner 4096 Jun  5 16:07 ./
 drwxr-xr-x 1 irisowner irisowner 4096 Jun  5 15:10 ../
@@ -415,10 +513,28 @@ lrwxrwxrwx 1 root      root        28 Jun  5 16:03 sftp_user1 -> /home/sftp_user
 lrwxrwxrwx 1 root      root        28 Jun  5 16:03 sftp_user2 -> /home/sftp_user2/incoming/in/
 lrwxrwxrwx 1 root      root        28 Jun  5 16:07 sftp_user3 -> /home/sftp_user3/incoming/in/
 $
+```
 
-
-(外部システムからの)ファイルのPut
+(外部システムからの)ファイル群のPutは下記の要領で実行できる。
+```
 docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
 sftp> put commit.txt incoming/in/
-docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user2@job
+docker compose exec task2 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user2@job
 sftp> put commit.txt incoming/in/
+```
+
+(外部システムからの)セマフォファイルのPutは下記の要領で実行できる。
+```
+docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
+sftp> ! echo "/home/sftp_user1/incoming/folder1/" > done.sem
+sftp> put done.sem incoming/common/done.sem
+```
+
+## ファイル送信
+BP.JobSendFile
+やりたいのはBPで作成したStreamContainerを使ってSFTPすること。
+ステータスのやり取りをCallTaskと共通化したいので、SendFileというBPを作ったほうが良さげ。
+Jobx 
+-> Call SendFile
+--> Stream作成や指定されたターゲット(この場合SFTPオペレーション)へのCall,応答(ヘッダのみ)からのステータス取得、
+-> Call CallTask

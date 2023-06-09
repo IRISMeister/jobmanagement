@@ -9,11 +9,11 @@ Method ExecWaitFolder(pRequest As Task.Request.WaitFolder, Output pResponse As T
 	Set pResponse=##class(Task.Response.WaitFolder).%New()
 
 	Set stmt=##class(%SQL.Statement).%New()
-	Set rs=stmt.%ExecDirect(,"SELECT FolderName FROM Task_Data.WaitFolder WHERE FolderName=?",pRequest.FolderName)
+	Set rs=stmt.%ExecDirect(,"SELECT FolderName FROM Task_Data.WaitFolder WHERE FolderName=? and TargetHostName=?",pRequest.FolderName,,pRequest.TargetHostName)
 	If rs.%Next() {
 		#; フォルダ重複
 		#; リトライしている間に解消する可能性はある。
-		Set errorText="フォルダ重複 FolderName:"_pRequest.FolderName
+		Set errorText="フォルダ重複 FolderName:"_pRequest.FolderName_" TargetHostName:"_pRequest.TargetHostName
 		$$$LOGWARNING(errorText)
 		Set ErrorMessage="コンフィグ名:"_..%ConfigName_" ("_..%SessionId_") エラー情報:"_errorText
 		Set pResponse.TaskErrorMessage=ErrorMessage
@@ -26,7 +26,7 @@ Method ExecWaitFolder(pRequest As Task.Request.WaitFolder, Output pResponse As T
 
 	Set token="" Do ..DeferResponse(.token)
 	#; フォルダ待ちのための登録
-	Set rs=stmt.%ExecDirect(,"INSERT INTO Task_Data.WaitFolder (FolderName, Token) VALUES (?,?)",pRequest.FolderName, token)
+	Set rs=stmt.%ExecDirect(,"INSERT INTO Task_Data.WaitFolder (TargetHostName, FolderName, Token) VALUES (?,?,?)",pRequest.TargetHostName,pRequest.FolderName, token)
 	If rs.%SQLCODE'=0 {
 		#; 予期せぬエラー発生。リトライで回復する見込みは薄い。
 		Set errorText="SQLエラー SQLCODE:"_rs.%SQLCODE
@@ -48,11 +48,11 @@ Method ExecWaitFile(pRequest As Task.Request.WaitFile, Output pResponse As Task.
 	Set pResponse=##class(Task.Response.WaitFile).%New()
 
 	Set stmt=##class(%SQL.Statement).%New()
-	Set rs=stmt.%ExecDirect(,"SELECT FileName FROM Task_Data.WaitFile WHERE FileName=?",pRequest.FileName)
+	Set rs=stmt.%ExecDirect(,"SELECT FileName FROM Task_Data.WaitFile WHERE FileName=? and TargetHostName=?",pRequest.FileName,pRequest.TargetHostName)
 	If rs.%Next() {
-		#; フォルダ重複
+		#; 重複登録
 		#; リトライしている間に解消する可能性はある。
-		Set errorText="ファイル重複 FileName:"_pRequest.FileName
+		Set errorText="ファイル重複 FileName:"_pRequest.FileName_" TargetHostName:"_pRequest.TargetHostName
 		$$$LOGWARNING(errorText)
 		Set ErrorMessage="コンフィグ名:"_..%ConfigName_" ("_..%SessionId_") エラー情報:"_errorText
 		Set pResponse.TaskErrorMessage=ErrorMessage
@@ -65,7 +65,7 @@ Method ExecWaitFile(pRequest As Task.Request.WaitFile, Output pResponse As Task.
 
 	Set token="" Do ..DeferResponse(.token)
 	#; フォルダ待ちのための登録
-	Set rs=stmt.%ExecDirect(,"INSERT INTO Task_Data.WaitFile (FileName, Token) VALUES (?,?)",pRequest.FileName, token)
+	Set rs=stmt.%ExecDirect(,"INSERT INTO Task_Data.WaitFile (TargetHostName, FileName, Token) VALUES (?,?,?)",pRequest.TargetHostName,pRequest.FileName, token)
 	If rs.%SQLCODE'=0 {
 		#; 予期せぬエラー発生。リトライで回復する見込みは薄い。
 		Set errorText="SQLエラー SQLCODE:"_rs.%SQLCODE

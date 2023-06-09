@@ -58,6 +58,10 @@ ClassMethod setup(Namespace As %String, srcdir As %String) As %Status
     Kill props("Type")
     Set tSC = ##Class(Security.Applications).Modify(webapi,.props)
     $$$ThrowOnError(tSC)
+	
+		;DEV/DEBUG Purrpose Only
+    ;Usefull for debug via VSCODE+Attach process
+		Set db=##class(SYS.Database).%OpenId("/usr/irissys/mgr/enslib"),db.ReadOnly=0,tSC=db.%Save()
 
     Set $NAMESPACE=Namespace
 
@@ -100,10 +104,16 @@ ClassMethod setup(Namespace As %String, srcdir As %String) As %Status
     Set tSC = task.%Save()	
     $$$ThrowOnError(tSC)
 
-    #; WSL2環境でフォアグラウンド実行を有効化
+		;++DEV/DEBUG Purrpose Only++
+    ; WSL2環境でフォアグラウンド実行を有効化
     Set ^Ens.Debug("ForegroundIPType")="custom"
     Set ^Ens.Debug("ForegroundIP")="localhost"
 
+		Do $SYSTEM.OBJ.Compile("Ens.Queue","ck-u")
+
+    Set $NAMESPACE="%SYS"
+		;DEV/DEBUG Purrpose Only
+		Set db=##class(SYS.Database).%OpenId("/usr/irissys/mgr/enslib"),db.ReadOnly=1,tSC=db.%Save()
 
   } Catch(e) {
 	  Set tSC=e.AsStatus()

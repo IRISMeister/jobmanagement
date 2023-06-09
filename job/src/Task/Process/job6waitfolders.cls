@@ -18,16 +18,18 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </code>
 <scope xpos='200' ypos='350' xend='200' yend='1200' >
 <call name='call1' target='cWaitFolder' async='1' xpos='200' ypos='450' >
-<annotation><![CDATA[folder1の待ちを登録]]></annotation>
+<annotation><![CDATA[folderの待ちを登録]]></annotation>
 <request type='Task.Request.WaitFolder' >
 <assign property="callrequest.FolderName" value="&quot;/home/sftp_user1/incoming/folder1/&quot;" action="set" />
+<assign property="callrequest.TargetHostName" value="&quot;$local&quot;" action="set" />
 </request>
 <response type='Task.Response.WaitFolder' />
 </call>
 <call name='call2' target='cWaitFolder' async='1' xpos='200' ypos='550' >
-<annotation><![CDATA[folder2の待ちを登録]]></annotation>
+<annotation><![CDATA[folderの待ちを登録]]></annotation>
 <request type='Task.Request.WaitFolder' >
-<assign property="callrequest.FolderName" value="&quot;/home/sftp_user2/incoming/folder2/&quot;" action="set" />
+<assign property="callrequest.FolderName" value="&quot;/home/sftp_user2/incoming/folder1/&quot;" action="set" />
+<assign property="callrequest.TargetHostName" value="&quot;$local&quot;" action="set" />
 </request>
 <response type='Task.Response.WaitFolder' />
 </call>

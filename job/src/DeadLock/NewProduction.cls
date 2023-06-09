@@ -16,6 +16,10 @@ XData ProductionDefinition
   </Item>
   <Item Name="Main2" Category="" ClassName="DeadLock.BP.Main2" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
   </Item>
+  <Item Name="Direct3" Category="" ClassName="DeadLock.BS.Direct3" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
+  <Item Name="Wait" Category="" ClassName="DeadLock.OP.Wait" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
 </Production>
 }
 

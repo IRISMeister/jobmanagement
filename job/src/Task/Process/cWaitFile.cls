@@ -38,7 +38,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <annotation><![CDATA[オペレーションでエラーが発生した場合、応答がDeferredではない場合がある。]]></annotation>
 <true>
 <sql xpos='335' ypos='500' >
-<![CDATA[DELETE FROM Task_Data.WaitFile WHERE FileName = :request.FileName]]>
+<![CDATA[DELETE FROM Task_Data.WaitFile WHERE TargetHostName = :request.TargetHostName and FileName = :request.FileName]]>
 </sql>
 </true>
 </if>

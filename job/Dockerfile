@@ -35,8 +35,8 @@ RUN addgroup sftp_user2 && useradd -m sftp_user2 -g sftp_user2 && echo "sftp_use
 RUN addgroup sftp_user3 && useradd -m sftp_user3 -g sftp_user3 && echo "sftp_user3:sftp_password" | chpasswd && chown root:root /home/sftp_user3 && chmod 655 /home/sftp_user3 
 RUN mkdir -p /home/sftp_user/incoming/in  /home/sftp_user/incoming/arc  /home/sftp_user/incoming/folder   /home/sftp_user/incoming/common  && chown -R sftp_user:sftp_user /home/sftp_user/incoming && chmod g+w /home/sftp_user/incoming/*
 RUN mkdir -p /home/sftp_user1/incoming/in /home/sftp_user1/incoming/arc /home/sftp_user1/incoming/folder1 /home/sftp_user1/incoming/common && chown -R sftp_user1:sftp_user1 /home/sftp_user1/incoming && chmod g+w /home/sftp_user1/incoming/*
-RUN mkdir -p /home/sftp_user2/incoming/in /home/sftp_user2/incoming/arc /home/sftp_user2/incoming/folder2 /home/sftp_user2/incoming/common && chown -R sftp_user2:sftp_user2 /home/sftp_user2/incoming && chmod g+w /home/sftp_user2/incoming/*
-RUN mkdir -p /home/sftp_user3/incoming/in /home/sftp_user3/incoming/arc /home/sftp_user3/incoming/folder3 /home/sftp_user3/incoming/common && chown -R sftp_user3:sftp_user3 /home/sftp_user3/incoming && chmod g+w /home/sftp_user3/incoming/*
+RUN mkdir -p /home/sftp_user2/incoming/in /home/sftp_user2/incoming/arc /home/sftp_user2/incoming/folder1 /home/sftp_user2/incoming/common && chown -R sftp_user2:sftp_user2 /home/sftp_user2/incoming && chmod g+w /home/sftp_user2/incoming/*
+RUN mkdir -p /home/sftp_user3/incoming/in /home/sftp_user3/incoming/arc /home/sftp_user3/incoming/folder1 /home/sftp_user3/incoming/common && chown -R sftp_user3:sftp_user3 /home/sftp_user3/incoming && chmod g+w /home/sftp_user3/incoming/*
 RUN addgroup sftp && echo "irisowner:irisowner" | chpasswd && usermod -aG sftp,sftp_user,sftp_user1,sftp_user2,sftp_user3 irisowner
 
 

@@ -1,18 +1,23 @@
 Class Task.Service.WaitForFile Extends Ens.BusinessService [ Language = objectscript ]
 {
 
+Property CopyFolderName As %Library.String(MAXLEN = 200);
+
+Parameter SETTINGS = "CopyFolderName:Basic:directorySelector";
+
 Parameter ADAPTER = "EnsLib.File.InboundAdapter";
 
 Method OnProcessInput(pInput As %RegisteredObject, Output pOutput As %RegisteredObject) As %Status
 {
 	Set filename=pInput.Filename ; full path name
 	Set stmt=##class(%SQL.Statement).%New()
-	Set rs=stmt.%ExecDirect(,"SELECT FileName,Token FROM Task_Data.WaitFile where FileName=?",filename)
+	#; $localは自身のローカルディスクを意味する仮のホスト名
+	Set rs=stmt.%ExecDirect(,"SELECT FileName,Token FROM Task_Data.WaitFile where TargetHostName='$local' and FileName=?",filename)
 	If rs.%Next() {
 		#; pInput : %Library.FileCharacterStream
 		#; EnsLib.File.InboundAdapterは処理済みファイルを削除/移動するが、SendDeferredResponse()を使用する場合
 		#; そのタイミングを制御できないのでコピーを作成して、コピーを処理に回す。
-		Set copyfilename="/home/sftp_user1/incoming/arc/"_##class(%File).GetFilename(filename)
+		Set copyfilename=..CopyFolderName_##class(%File).GetFilename(filename)
 		Set fs=##class(%Library.FileBinaryStream).%New()
 		Set fs.Filename=copyfilename
 		Do fs.CopyFrom(pInput)

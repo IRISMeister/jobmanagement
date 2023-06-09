@@ -14,10 +14,10 @@ docker compose exec job bash -c "echo 123 >> /home/sftp_user1/incoming/folder1/2
 docker compose exec job bash -c "echo 123 >> /home/sftp_user1/incoming/folder1/3.txt"
 docker compose exec job bash -c "echo 123 >> /home/sftp_user1/incoming/folder1/4.txt"
 
-docker compose exec job bash -c "echo 123 >> /home/sftp_user2/incoming/folder2/1.txt"
-docker compose exec job bash -c "echo 123 >> /home/sftp_user2/incoming/folder2/2.txt"
-docker compose exec job bash -c "echo 123 >> /home/sftp_user2/incoming/folder2/3.txt"
+docker compose exec job bash -c "echo 123 >> /home/sftp_user2/incoming/folder1/1.txt"
+docker compose exec job bash -c "echo 123 >> /home/sftp_user2/incoming/folder1/2.txt"
+docker compose exec job bash -c "echo 123 >> /home/sftp_user2/incoming/folder1/3.txt"
 
 # 上記の更新を伝えるセマフォファイルを作成
-docker compose exec job bash -c 'echo "/home/sftp_user1/incoming/folder1/" > /home/irisowner/incoming/common/sftp_user1/done1.txt'
-docker compose exec job bash -c 'echo "/home/sftp_user2/incoming/folder2/" > /home/irisowner/incoming/common/sftp_user2/done2.txt'
+docker compose exec job bash -c 'echo "/home/sftp_user1/incoming/folder1/" > /home/irisowner/incoming/common/sftp_user1/done.sem'
+docker compose exec job bash -c 'echo "/home/sftp_user2/incoming/folder1/" > /home/irisowner/incoming/common/sftp_user2/done.sem'

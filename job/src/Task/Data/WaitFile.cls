@@ -6,8 +6,10 @@ Property FileName As %Library.String(MAXLEN = 200) [ SqlColumnNumber = 2 ];
 
 Property Token As %Library.String(MAXLEN = 50) [ SqlColumnNumber = 3 ];
 
+Property TargetHostName As %String;
+
 /// DDL Primary Key Specification
-Index WAITFILEPKEY1 On FileName [ PrimaryKey, SqlName = WAITFILE_PKEY1, Type = index, Unique ];
+Index WAITFILEPKEY1 On (FileName, TargetHostName) [ PrimaryKey, SqlName = WAITFILE_PKEY1, Type = index, Unique ];
 
 Storage Default
 {
@@ -17,6 +19,9 @@ Storage Default
 </Value>
 <Value name="2">
 <Value>Token</Value>
+</Value>
+<Value name="3">
+<Value>TargetHostName</Value>
 </Value>
 </Data>
 <DataLocation>^Task.Data.WaitFileD</DataLocation>

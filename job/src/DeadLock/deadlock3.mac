@@ -1,0 +1,9 @@
+ROUTINE deadlock3
+main() public {
+	Set tSC = ##class(Ens.Director).CreateBusinessService("Direct3",.tService)
+	If ($IsObject(tService)) {
+		Set req=##class(Ens.Request).%New()
+		Set tSC = tService.ProcessInput(req,.res)
+		zw res
+	}
+}
