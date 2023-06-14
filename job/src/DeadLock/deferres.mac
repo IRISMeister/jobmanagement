@@ -1,0 +1,16 @@
+ROUTINE deferres
+main() public {
+	Set seq="" For {
+		Set seq=$O(^token(seq),1,token) q:seq=""
+		Do exec(token)
+		Kill ^token(seq)
+	}
+}
+exec(token) {
+	Set tSC = ##class(Ens.Director).CreateBusinessService("DeferRes",.tService)
+	If ($IsObject(tService)) {
+		Set req=##class(Ens.StringRequest).%New()
+		Set req.StringValue=token
+		Set tSC = tService.ProcessInput(req)
+	}
+}

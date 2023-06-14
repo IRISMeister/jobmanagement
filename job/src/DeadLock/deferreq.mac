@@ -1,0 +1,8 @@
+ROUTINE deferreq
+main() public {
+	Set tSC = ##class(Ens.Director).CreateBusinessService("DeferReq",.tService)
+	If ($IsObject(tService)) {
+		Set req=##class(Ens.Request).%New()
+		Set tSC = tService.ProcessInput(req)
+	}
+}

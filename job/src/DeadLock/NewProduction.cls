@@ -20,6 +20,14 @@ XData ProductionDefinition
   </Item>
   <Item Name="Wait" Category="" ClassName="DeadLock.OP.Wait" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
+  <Item Name="Defer" Category="" ClassName="DeadLock.BP.Defer" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
+  <Item Name="OPDefer" Category="" ClassName="DeadLock.OP.Defer" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
+  <Item Name="DeferReq" Category="" ClassName="DeadLock.BS.DeferReq" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
+  <Item Name="DeferRes" Category="" ClassName="DeadLock.BS.DeferRes" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  </Item>
 </Production>
 }
 

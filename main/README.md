@@ -311,9 +311,9 @@ common/folderB.txt
 手元ファイルを外部にSFTPするなど(その他RESTでも何でも良い)をトリガに、その応答がしばらくしてから(非同期で)ローカルファイルにPutされるような連携を想定。
 
 ```
-docker compose exec job iris session iris -UJOB job5WaitFile
+docker compose exec job iris session iris -UJOB job5File
 ```
-あるいは、job5waitfileをSMPでTEST実行する。いずれもブロックされる。
+あるいは、job5FileをSMPでTEST実行する。いずれもブロックされる。
 
 下記のSQLで待ちファイルが登録されていることを確認で出来る。
 ```
@@ -338,6 +338,10 @@ docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/200.r
 
 # 複数ローカルファイル待ち
 
+```
+docker compose exec job iris session iris -UJOB job6Files
+```
+
 1. 外部システムの動作を、task1からsftp経由でjobにファイルをputすることで再現する方法
 ```
 docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
@@ -352,6 +356,17 @@ docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/200.r
 ```
 
 # 複数ローカルフォルダ待ち
+
+```
+docker compose exec job iris session iris -UJOB job7Folders
+```
+このタイミングで、待ちフォルダが登録される
+```
+SELECT FolderName, Token FROM Task_Data.WaitFolder
+FolderName	Token
+/home/sftp_user1/incoming/folder1/	5|Task.Production1
+/home/sftp_user2/incoming/folder1/	6|Task.Production1
+```
 
 1. 外部システムの動作を、task1およびtask2からsftp経由でjobにファイルをputすることで再現する方法
 
@@ -380,11 +395,28 @@ sftp> put done.sem incoming/common/done.sem
 # 単一SFTPファイル待ち
 
 ```
+docker compose exec job iris session iris -UJOB job8RemoteFile
+```
+
+アプリケーションによるファイルの作成を再現。
+```
 docker compose exec task1 bash -c 'echo "あいうえお" > /home/irisowner/outgoing/100.res.txt'
+```
+
+補足事項。Jobサーバからは下記のようにリモートファイルとして見える。
+```
+docker compose exec job sshpass -p "irisowner" sftp -o "StrictHostKeyChecking no" irisowner@task1
+sftp> ls outgoing
+outgoing/100.res.txt
 ```
 
 # 複数SFTPファイル待ち
 
+```
+docker compose exec job iris session iris -UJOB job9RemoteFiles
+```
+
+アプリケーションによるファイルの作成を再現。
 ```
 docker compose exec task1 bash -c 'echo "あいうえお" > /home/irisowner/outgoing/100.res.txt'
 docker compose exec task2 bash -c 'echo "あいうえお" > /home/irisowner/outgoing/100.res.txt'
@@ -396,40 +428,6 @@ docker compose exec task2 bash -c 'echo "あいうえお" > /home/irisowner/outg
 
 
 ------------------------------------------
-テスト手順
-
-- 単独File待ちのテスト
-手元ファイルを外部にSFTPしたらとか(何でも良い)をトリガに、その応答がしばらくしてから(非同期で)ファイルで帰ってくるような連携を想定。
-
-
-```
-docker compose exec job iris session iris -UJOB job5WaitFile
-```
-あるいは
-job5waitfileをSMPでTEST実行
-
-ブロックされる
-
-ファイルのsftp送信後に、待ちファイルが登録される
-```
-SELECT FileName, Token FROM Task_Data.WaitFile
-FileName	Token
-/home/sftp_user1/incoming/in/100.res.txt    5|Task.Production1
-```
-
-待っているファイルを作成してあげることでブロック状態が解消される。内容は何でも良い。ただし、putするファイルはirisownerアカウントで動作するirisがdeleteできるように、権限が66xになる必要がある。
-
-1. 外部アプリケーションの動作を、target1(task)からsftp経由でjobにファイルをput、することで再現
-```
-docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user1@job
-sftp> put commit.txt incoming/in/100.res.txt
-```
-
-2. 直接待っているファイルを作成。
-```
-docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/100.res.txt'
-docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/200.res.txt' 
-```
 
 使用可能なsftpユーザは下記の通り。
 ```
@@ -438,55 +436,6 @@ docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyCheck
 docker compose exec task1 sshpass -p "sftp_password" sftp -o "StrictHostKeyChecking no" sftp_user3@job
 sftp> put commit.txt incoming/in/100.res.txt
 ```
-
-WaitForRemoteFileの場合
-
-外部システムが自分のローカルフィルダにファイルを作成した状態を再現
-```
-docker compose exec task1 bash -c 'echo "あいうえお" > /home/irisowner/outgoing/100.res.txt'
-docker compose exec task2 bash -c 'echo "あいうえお" > /home/irisowner/outgoing/100.res.txt'
-```
-
-Jobサーバからは下記のように見える。
-```
-docker compose exec job sshpass -p "irisowner" sftp -o "StrictHostKeyChecking no" irisowner@task1
-sftp> ls outgoing
-outgoing/100.res.txt
-```
-
-単一のBS/(FTP)から複数のFTPサーバに対してクエリ実行やGetを実行できないので、待ち合わせの対象となるFTPサーバは1台のみに限定される。
-
-
-- 複数Folder待ちのテスト
-指定した複数のフォルダ以下にファイルが配置された時点で次の処理に進む。
-
-```
-docker compose exec job iris session iris -UJOB job6WaitFolders
-```
-あるいはSMPでBP/job6WaitFoldersをテスト実行する。
-
-いずれも、ブロックされる
-
-
-待ちフォルダが登録される
-```
-SELECT FolderName, Token FROM Task_Data.WaitFolder
-FolderName	Token
-/home/sftp_user1/incoming/folder1/	5|Task.Production1
-/home/sftp_user2/incoming/folder2/	6|Task.Production1
-```
-
-以下を実行(jobコンテナのfolder1/ folder2/下に適当にファイルを作成し、セマフォファイルを作成)するとブロック状態が解消される。
-
-```
-./commit-files.sh
-```
-
-WaitForRemoteFoldereの場合
-
-単一のBS/(FTP)から複数のFTPサーバに対してクエリ実行やGetを実行できないので、待ち合わせの対象となるFTPサーバは1台のみに限定される。
-
-
 
 # FTPの課題
 

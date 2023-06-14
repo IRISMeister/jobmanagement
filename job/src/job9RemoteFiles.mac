@@ -1,9 +1,9 @@
-ROUTINE job5WaitFile
+ROUTINE job9RemoteFiles
 main() public {
 	Set tSC = ##class(Ens.Director).CreateBusinessService("Direct",.tService)
 	If ($IsObject(tService)) {
 		Set input=##class(Task.Request.CallJob).%New()
-		Set input.JobName="job5waitfile"
+		Set input.JobName="job9RemoteFiles"
 		Set tSC = tService.ProcessInput(input,.output)
 		zw output
 	}

@@ -1,5 +1,5 @@
 /// Wait Folders
-Class Task.Process.job5waitremotefile Extends Ens.BusinessProcessBPL [ ClassType = persistent, DependsOn = Task.Context.Custom, ProcedureBlock ]
+Class Task.Process.job5File Extends Ens.BusinessProcessBPL [ ClassType = persistent, DependsOn = Task.Context.Custom, ProcedureBlock ]
 {
 
 Storage Default
@@ -20,8 +20,8 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <call name='call1' target='cWaitFile' async='0' xpos='200' ypos='450' >
 <annotation><![CDATA[指定されたファイルを待つ]]></annotation>
 <request type='Task.Request.WaitFile' >
-<assign property="callrequest.FileName" value="&quot;/home/irisowner/outgoing/100.res.txt&quot;" action="set" />
-<assign property="callrequest.TargetHostName" value="&quot;task1&quot;" action="set" />
+<assign property="callrequest.FileName" value="&quot;/home/sftp_user1/incoming/in/100.res.txt&quot;" action="set" />
+<assign property="callrequest.TargetHostName" value="&quot;$local&quot;" action="set" />
 </request>
 <response type='Task.Response.WaitFile' >
 <assign property="context.TaskStatus" value="callresponse.TaskStatus" action="set" />

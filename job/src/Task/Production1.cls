@@ -53,11 +53,11 @@ XData ProductionDefinition
   </Item>
   <Item Name="Job4" Category="job" ClassName="Task.Process.Job4" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="job5waitfile" Category="job" ClassName="Task.Process.job5waitfile" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="job5File" Category="job" ClassName="Task.Process.job5File" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="job5waitfiles" Category="job" ClassName="Task.Process.job5waitfiles" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="job6Files" Category="job" ClassName="Task.Process.job6Files" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="job6waitfolders" Category="job" ClassName="Task.Process.job6waitfolders" PoolSize="0" Enabled="true" Foreground="false" Comment="BP内で指定した全フォルダに何某かのファイル(群)が投入されるまで、処理を保留する。" LogTraceEvents="false" Schedule="">
+  <Item Name="job7Folders" Category="job" ClassName="Task.Process.job7Folders" PoolSize="0" Enabled="true" Foreground="false" Comment="BP内で指定した全フォルダに何某かのファイル(群)が投入されるまで、処理を保留する。" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="Task1_REST" Category="" ClassName="Task.Operation.GeneralRest" PoolSize="2" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="Credentials">default</Setting>
@@ -139,9 +139,9 @@ XData ProductionDefinition
     <Setting Target="Adapter" Name="FileSpec">*</Setting>
     <Setting Target="Host" Name="CopyFolderName">/home/irisowner/outgoing/</Setting>
   </Item>
-  <Item Name="job5waitremotefile" Category="" ClassName="Task.Process.job5waitremotefile" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="job8RemoteFile" Category="" ClassName="Task.Process.job8RemoteFile" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="job5waitremotefiles" Category="" ClassName="Task.Process.job5waitremotefiles" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="job9RemoteFiles" Category="" ClassName="Task.Process.job9RemoteFiles" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="Task1_WaitForFolders" Category="" ClassName="Task.Service.WaitForRemoteFolders" PoolSize="1" Enabled="false" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
     <Setting Target="Adapter" Name="Credentials">task_sftp</Setting>
