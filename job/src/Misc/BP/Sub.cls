@@ -1,5 +1,5 @@
 /// 
-Class DeadLock.BP.Sub Extends Ens.BusinessProcessBPL [ ClassType = persistent, ProcedureBlock ]
+Class Misc.BP.Sub Extends Ens.BusinessProcessBPL [ ClassType = persistent, ProcedureBlock ]
 {
 
 /// BPL Definition

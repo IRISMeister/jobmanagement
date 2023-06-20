@@ -9,7 +9,7 @@ Method OnProcessInput(pInput As %Stream.Object, Output pOutput As %RegisteredObj
 	Set tSC='$$$OK
 	Try {
 		Set folder=pInput.ReadLine()
-		&SQL(SELECT TOKEN into :token FROM Task_Data.WaitFolder WHERE FolderName=:folder)
+		&SQL(SELECT TOKEN into :token FROM Task_Data.WaitFolder WHERE TargetHostName='$local' and FolderName=:folder)
 		$$$LOGINFO("folder:"_folder_" token:"_token)
 
 		Set pResponse=##class(Task.Response.WaitFolder).%New()
@@ -24,7 +24,8 @@ Method OnProcessInput(pInput As %Stream.Object, Output pOutput As %RegisteredObj
 		Set rs=stmt.%Execute(folder)
 		While(rs.%Next()) {
 			Set filename=rs.%CurrentResult.Name
-			Do pResponse.Files.Insert(filename)
+			Set tSC=pResponse.Files.Insert(filename)
+			$$$ThrowOnError(tSC)
 		}
 
 		Set tSC=..SendDeferredResponse(token,pResponse)

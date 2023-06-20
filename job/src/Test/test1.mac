@@ -1,12 +1,9 @@
 ROUTINE test1
 
- Set pResponse=##class(Task.Response.WaitFolder).%New()
-
- Set stmt=##class(%SQL.Statement).%New()
- Set tSC=stmt.%PrepareClassQuery("%Library.File","FileSet")
- Set rs=stmt.%Execute("/home/irisowner/incoming/folder1/")
- While(rs.%Next()) {
-	Set filename=rs.%CurrentResult.Name
-	w filename,!
-	Do pResponse.Files.Insert(filename)
- }
+	Set targethost="task1"
+	Set folder="/home/irisowner/outgoing/folder1/"
+	Set stmt=##class(%SQL.Statement).%New()
+	Set rs=stmt.%ExecDirect(,"SELECT Token FROM Task_Data.WaitFolder where TargetHostName=? and FolderName=?",targethost,folder)
+	If rs.%Next() {
+		b
+	}

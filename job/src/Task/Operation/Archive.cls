@@ -3,7 +3,7 @@ Class Task.Operation.Archive Extends Ens.BusinessOperation
 
 Parameter INVOCATION = "Queue";
 
-Method Exec(pRequest As Task.Request.CallTask, Output pResponse As Ens.Response) As %Status
+Method Exec(pRequest As Task.Request.ArchiveFiles, Output pResponse As Ens.Response) As %Status
 {
 	Set tSC='$$$OK
 

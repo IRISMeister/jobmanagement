@@ -332,9 +332,7 @@ sftp> put commit.txt incoming/in/100.res.txt
 2. 待っているファイルを直接ローカルに作成する方法。
 ```
 docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/100.res.txt'
-docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/200.res.txt' 
 ```
-
 
 # 複数ローカルファイル待ち
 
@@ -424,8 +422,13 @@ docker compose exec task2 bash -c 'echo "あいうえお" > /home/irisowner/outg
 
 # 複数SFTPフォルダ待ち(未完)
 
+```
+docker compose exec job iris session iris -UJOB job10RemoteFolders
+```
 
-
+```
+./commit-remotefiles.sh
+```
 
 ------------------------------------------
 

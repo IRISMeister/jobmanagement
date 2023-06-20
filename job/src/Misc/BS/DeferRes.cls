@@ -1,4 +1,4 @@
-Class DeadLock.BS.DeferRes Extends Ens.BusinessService
+Class Misc.BS.DeferRes Extends Ens.BusinessService
 {
 
 Method OnProcessInput(pInput As Ens.StringRequest, Output pOutput As %RegisteredObject) As %Status

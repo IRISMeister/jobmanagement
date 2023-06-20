@@ -78,7 +78,8 @@ Method ExecWaitFile(pRequest As Task.Request.WaitFile, Output pResponse As Task.
 		Return $$$OK
 	}	
 	$$$LOGINFO("Token:"_token)
-	Set pResponse.TaskStatus="OK"
+	;Set pResponse.TaskStatus="OK"
+	Kill pResponse
 	Return $$$OK
 }
 

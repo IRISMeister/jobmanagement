@@ -1,9 +1,9 @@
-Class DeadLock.BS.Direct2 Extends Ens.BusinessService
+Class Misc.BS.Direct3 Extends Ens.BusinessService
 {
 
 Method OnProcessInput(pInput As %RegisteredObject, Output pOutput As %RegisteredObject) As %Status
 {
-	Set tSC = ..SendRequestSync("Main2", pInput, .pOutput)
+	Set tSC = ..SendRequestSync("Wait10000Secs", pInput, .pOutput)
 	Return tSC
 	Return $$$OK
 }

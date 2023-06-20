@@ -1,9 +1,9 @@
-Class DeadLock.BS.Direct Extends Ens.BusinessService
+Class Misc.BS.DirectComponent Extends Ens.BusinessService
 {
 
 Method OnProcessInput(pInput As %RegisteredObject, Output pOutput As %RegisteredObject) As %Status
 {
-	Set tSC = ..SendRequestSync("Main", pInput, .pOutput)
+	Set tSC = ..SendRequestSync("CallBP", pInput, .pOutput)
 	Return tSC
 	Return $$$OK
 }

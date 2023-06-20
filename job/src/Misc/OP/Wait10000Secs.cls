@@ -1,4 +1,4 @@
-Class DeadLock.OP.Wait Extends Ens.BusinessOperation
+Class Misc.OP.Wait10000Secs Extends Ens.BusinessOperation
 {
 
 Parameter INVOCATION = "Queue";

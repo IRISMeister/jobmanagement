@@ -1,4 +1,4 @@
-Class DeadLock.OP.Defer Extends Ens.BusinessOperation
+Class Misc.OP.Defer Extends Ens.BusinessOperation
 {
 
 Parameter INVOCATION = "InProc";

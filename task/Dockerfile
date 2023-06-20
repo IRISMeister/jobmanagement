@@ -55,7 +55,8 @@ RUN  iris start $ISC_PACKAGE_INSTANCENAME \
 
 #++ until imageBuildSteps.sh is chnaged++
 # imageBuildSteps makes appuser 'ForceChangePassword' state....
-RUN mkdir -p incoming/in outgoing \
+#RUN mkdir -p incoming/in outgoing outgoing/folder1 && chmod -R 777 outgoing \
+RUN mkdir -p incoming/in outgoing outgoing/folder1 \
  && iris start $ISC_PACKAGE_INSTANCENAME nostu quietly \
  && printf "kill ^%%SYS(\"JOURNAL\") kill ^SYS(\"NODE\") h\n" | iris session $ISC_PACKAGE_INSTANCENAME -B | cat \
  && iris stop $ISC_PACKAGE_INSTANCENAME quietly bypass \

@@ -1,4 +1,4 @@
-Class DeadLock.Context.Custom Extends Ens.BP.Context
+Class Misc.Context.Custom Extends Ens.BP.Context
 {
 
 Property p1 As %String;

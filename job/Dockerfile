@@ -42,7 +42,7 @@ RUN addgroup sftp && echo "irisowner:irisowner" | chpasswd && usermod -aG sftp,s
 
 USER irisowner
 #RUN mkdir -p incoming/in && mkdir -p incoming/arc && mkdir -p incoming/folder1 && mkdir -p incoming/folder2 &&  mkdir -p incoming/common && mkdir -p outgoing 
-RUN mkdir -p incoming/in incoming/arc incoming/folder1 incoming/folder2 incoming/common incoming/common-arc outgoing 
+RUN mkdir -p incoming/in incoming/arc incoming/folder1 incoming/folder2 incoming/common incoming/common-arc outgoing outgoing/task1 outgoing/task2
 
 # Used to watch semaphor files for BS/WaitForFolders 
 RUN ln -s /home/sftp_user/incoming/common /home/irisowner/incoming/common/sftp_user

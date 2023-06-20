@@ -1,0 +1,9 @@
+ROUTINE flow
+main() public {
+	Set tSC = ##class(Ens.Director).CreateBusinessService("DirectFlow",.tService)
+	If ($IsObject(tService)) {
+		Set req=##class(Ens.Request).%New()
+		Set tSC = tService.ProcessInput(req,.res)
+		zw res
+	}
+}

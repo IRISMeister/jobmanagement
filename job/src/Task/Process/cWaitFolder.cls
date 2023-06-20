@@ -39,7 +39,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <true>
 <sql xpos='335' ypos='500' >
 <annotation><![CDATA[成功時のみ削除]]></annotation>
-<![CDATA[DELETE FROM Task_Data.WaitFolder WHERE FolderName = :request.FolderName]]>
+<![CDATA[DELETE FROM Task_Data.WaitFolder WHERE FolderName = :request.FolderName and TargetHostName = :request.TargetHostName]]>
 </sql>
 </true>
 </if>

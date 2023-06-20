@@ -116,9 +116,11 @@ XData ProductionDefinition
     <Setting Target="Adapter" Name="FilePath">/home/irisowner/incoming/common</Setting>
     <Setting Target="Adapter" Name="SubdirectoryLevels">1</Setting>
     <Setting Target="Adapter" Name="ArchivePath">/home/irisowner/incoming/common-arc/</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*.sem</Setting>
   </Item>
   <Item Name="WaitForFile" Category="" ClassName="Task.Service.WaitForFile" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
     <Setting Target="Adapter" Name="FilePath">/home/sftp_user1/incoming/in/</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*.txt</Setting>
     <Setting Target="Host" Name="CopyFolderName">/home/sftp_user1/incoming/arc/</Setting>
   </Item>
   <Item Name="Archive" Category="" ClassName="Task.Operation.Archive" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
@@ -128,7 +130,7 @@ XData ProductionDefinition
     <Setting Target="Adapter" Name="FTPServer">task1</Setting>
     <Setting Target="Adapter" Name="Protocol">SFTP</Setting>
     <Setting Target="Adapter" Name="FilePath">/home/irisowner/outgoing/</Setting>
-    <Setting Target="Adapter" Name="FileSpec">*</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*.txt</Setting>
     <Setting Target="Host" Name="CopyFolderName">/home/irisowner/outgoing/</Setting>
   </Item>
   <Item Name="Task2_WaitForFile" Category="" ClassName="Task.Service.WaitForRemoteFile" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
@@ -136,19 +138,30 @@ XData ProductionDefinition
     <Setting Target="Adapter" Name="FTPServer">task2</Setting>
     <Setting Target="Adapter" Name="Protocol">SFTP</Setting>
     <Setting Target="Adapter" Name="FilePath">/home/irisowner/outgoing/</Setting>
-    <Setting Target="Adapter" Name="FileSpec">*</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*.txt</Setting>
     <Setting Target="Host" Name="CopyFolderName">/home/irisowner/outgoing/</Setting>
   </Item>
   <Item Name="job8RemoteFile" Category="" ClassName="Task.Process.job8RemoteFile" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="job9RemoteFiles" Category="" ClassName="Task.Process.job9RemoteFiles" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
-  <Item Name="Task1_WaitForFolders" Category="" ClassName="Task.Service.WaitForRemoteFolders" PoolSize="1" Enabled="false" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="Task1_WaitForFolders" Category="" ClassName="Task.Service.WaitForRemoteFolders" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
     <Setting Target="Adapter" Name="Credentials">task_sftp</Setting>
     <Setting Target="Adapter" Name="FTPServer">task1</Setting>
     <Setting Target="Adapter" Name="Protocol">SFTP</Setting>
     <Setting Target="Adapter" Name="FilePath">/home/irisowner/outgoing/</Setting>
-    <Setting Target="Adapter" Name="FileSpec">*</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*.sem</Setting>
+    <Setting Target="Host" Name="CopyFolderName">/home/irisowner/outgoing/task1/</Setting>
+  </Item>
+  <Item Name="Task2_WaitForFolders" Category="" ClassName="Task.Service.WaitForRemoteFolders" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+    <Setting Target="Adapter" Name="Credentials">task_sftp</Setting>
+    <Setting Target="Adapter" Name="FTPServer">task2</Setting>
+    <Setting Target="Adapter" Name="Protocol">SFTP</Setting>
+    <Setting Target="Adapter" Name="FilePath">/home/irisowner/outgoing/</Setting>
+    <Setting Target="Adapter" Name="FileSpec">*.sem</Setting>
+    <Setting Target="Host" Name="CopyFolderName">/home/irisowner/outgoing/task2/</Setting>
+  </Item>
+  <Item Name="job10RemoteFolders" Category="" ClassName="Task.Process.job10RemoteFolders" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
 </Production>
 }
