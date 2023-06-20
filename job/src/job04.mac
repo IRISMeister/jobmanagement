@@ -1,9 +1,14 @@
-ROUTINE job9RemoteFiles
-main() public {
+ROUTINE job04
+main(p1="abc",halttime=0) public {
+	;
+	Write "You need to login as _SYSTEM user and open WF. Accept WF request to proceed.",!
+	;
 	Set tSC = ##class(Ens.Director).CreateBusinessService("Direct",.tService)
 	If ($IsObject(tService)) {
 		Set input=##class(Task.Request.CallJob).%New()
-		Set input.JobName="job9RemoteFiles"
+		Set input.JobName="job04"
+		Set input.P1=p1
+		Set input.P2=halttime
 		Set tSC = tService.ProcessInput(input,.output)
 		zw output
 	}

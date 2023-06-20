@@ -1,5 +1,5 @@
-/// job2からコールされることを想定。
-Class Task.Process.Job2a Extends Ens.BusinessProcessBPL [ ClassType = persistent, DependsOn = Task.Context.Custom, ProcedureBlock ]
+/// job02からコールされることを想定。
+Class Task.Process.job02a Extends Ens.BusinessProcessBPL [ ClassType = persistent, DependsOn = Task.Context.Custom, ProcedureBlock ]
 {
 
 Storage Default

@@ -1,5 +1,5 @@
-/// job2a,job2bを並列実行し、双方が正常終了した場合に、task1を起動する。
-Class Task.Process.Job2 Extends Ens.BusinessProcessBPL [ ClassType = persistent, DependsOn = Task.Context.Custom, ProcedureBlock ]
+/// job02a,job02bを並列実行し、双方が正常終了した場合に、task1を起動する。
+Class Task.Process.job02 Extends Ens.BusinessProcessBPL [ ClassType = persistent, DependsOn = Task.Context.Custom, ProcedureBlock ]
 {
 
 Storage Default
@@ -16,27 +16,27 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <![CDATA[ Do context.OnStart(request,response)]]>
 </code>
 <scope xpos='200' ypos='350' xend='200' yend='1750' >
-<call name='job2a' target='Job2a' async='1' xpos='200' ypos='450' >
-<annotation><![CDATA[job2a,非同期]]></annotation>
+<call name='job02a' target='job02a' async='1' xpos='200' ypos='450' >
+<annotation><![CDATA[job02a,非同期]]></annotation>
 <request type='Task.Request.CallJob' >
 <assign property="callrequest" value="request" action="set" />
 </request>
 <response type='Task.Response.CallJob' />
 </call>
 <assign property="context.DelayParameter" value="&quot;PT5S&quot;" action="set" xpos='200' ypos='550' >
-<annotation><![CDATA[job2bの呼び出しを実施する時間までの待ち時間をコンテキストに設定。実用にはなにがしかのロジック呼び出しを伴うと想定。]]></annotation>
+<annotation><![CDATA[job02bの呼び出しを実施する時間までの待ち時間をコンテキストに設定。実用にはなにがしかのロジック呼び出しを伴うと想定。]]></annotation>
 </assign>
 <delay until='context.DelayParameter' xpos='200' ypos='650' >
 <annotation><![CDATA[待ち実行。実際には、Contextクラスにメソッドを定義して、そこから取得するほうが実用的。]]></annotation>
 </delay>
-<call name='job2b' target='Job2b' async='1' xpos='200' ypos='750' >
-<annotation><![CDATA[job2b,非同期]]></annotation>
+<call name='job02b' target='job02b' async='1' xpos='200' ypos='750' >
+<annotation><![CDATA[job02b,非同期]]></annotation>
 <request type='Task.Request.CallJob' >
 <assign property="callrequest" value="request" action="set" />
 </request>
 <response type='Task.Response.CallJob' />
 </call>
-<sync calls='job2a,job2b' type='all' xpos='200' ypos='850' >
+<sync calls='job02a,job02b' type='all' xpos='200' ypos='850' >
 <annotation><![CDATA[全てのJobの完了を待つ]]></annotation>
 </sync>
 <foreach property='syncresponses' key='context.iterator' xpos='200' ypos='950' xend='200' yend='600' >

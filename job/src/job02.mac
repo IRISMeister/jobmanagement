@@ -1,9 +1,15 @@
-ROUTINE job6Files
-main() public {
+ROUTINE job02
+main(p1="abc",halttime=0) public {
+	;
+	Write "Will take at least 15 seconds.",!
+	;
 	Set tSC = ##class(Ens.Director).CreateBusinessService("Direct",.tService)
 	If ($IsObject(tService)) {
+		;Set input = ##class(Ens.StringRequest).%New()
 		Set input=##class(Task.Request.CallJob).%New()
-		Set input.JobName="job6Files"
+		Set input.JobName="job02"
+		Set input.P1=p1
+		Set input.P2=halttime
 		Set tSC = tService.ProcessInput(input,.output)
 		zw output
 	}

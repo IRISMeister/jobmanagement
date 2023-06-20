@@ -86,11 +86,11 @@ ClassMethod setup(Namespace As %String, srcdir As %String) As %Status
 
     #;IRISタスクを追加
     Set task = ##class(%SYS.Task).%New()
-    Set task.Name = "Job1"
-    Set task.Description = "Call Job1"
+    Set task.Name = "job01"
+    Set task.Description = "Call job01"
     Set task.NameSpace = "JOB"
-    Set task.TaskClass = "SysTask.Job1"
-    Set task.Settings = $lb("JobName","Job1","P1","abc")
+    Set task.TaskClass = "SysTask.job01"
+    Set task.Settings = $lb("JobName","job01","P1","abc")
     Set task.TimePeriod = 0
     Set task.DailyFrequency = 1
     Set task.DailyFrequencyTime = 0

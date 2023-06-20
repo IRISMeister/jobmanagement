@@ -1,4 +1,4 @@
-Class SysTask.Job1 Extends %SYS.Task.Definition
+Class SysTask.job01 Extends %SYS.Task.Definition
 {
 
 Property JobName As %String;
@@ -17,9 +17,9 @@ Method OnTask() As %Status
 		
 		If ($IsObject(tService)) {
 			Set input=##class(Task.Request.CallJob).%New()
-			Set input.JobName=..JobName   //"Job1"
+			Set input.JobName=..JobName   //"job01"
 			Set input.P1=..P1             //"abc"
-			Set input.P2=$G(^SysTask.Job1,0)
+			Set input.P2=$G(^SysTask.job01,0)
 			Set tSC = tService.ProcessInput(input,.output)
 			Set ^SysTaskLog(seq,2)=$ZDATETIME($H)_"/"_$JOB_"/"_tService.%SessionId
 		}

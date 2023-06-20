@@ -30,11 +30,11 @@ $ docker compose down
 # 各ジョブの処理内容
 
 共通事項として、BP/JobXは、タスクを呼び出す際には、BP/CallTaskに対してリクエストを出す、もしくはBP/CallTaskを実行する他のBPを呼び出すかのいずれかとなります。
-## JOB1 
+## job01 
 
 ### 起動方法
 
-[JOB1](../job/src/SysTask/Job1.cls)は、コンテナ起動直後より[タスクマネージャ](http://localhost:9203/csp/sys/op/%25CSP.UI.Portal.TaskInfo.zen?$ID1=1000)->[BP/Direct](../job/src/Task/Service/Direct.cls)経由で5分間隔で自動実行されています。
+[job01](../job/src/SysTask/job01.cls)は、コンテナ起動直後より[タスクマネージャ](http://localhost:9203/csp/sys/op/%25CSP.UI.Portal.TaskInfo.zen?$ID1=1000)->[BP/Direct](../job/src/Task/Service/Direct.cls)経由で5分間隔で自動実行されています。
 
 ### 処理内容
 
@@ -50,30 +50,30 @@ sequenceDiagram
 
 participant /TaskComplete
 participant BS/Direct
-participant BP/Job1
+participant BP/job01
 participant BP/CallTask
 participant BO/Task1_REST
 participant BO/Task2_REST
 
-BS/Direct->>+BP/Job1: Request
+BS/Direct->>+BP/job01: Request
 
-BP/Job1->>+BP/CallTask: Task1@BO/Task1_REST
+BP/job01->>+BP/CallTask: Task1@BO/Task1_REST
 
 BP/CallTask->>+BO/Task1_REST: invoke Task1
 
 BO/Task1_REST->>+/Task1_REST/Task:REST Req
 /Task1_REST/Task-->>-BO/Task1_REST:REST Resp
 BO/Task1_REST-->>-BP/CallTask: Response
-BP/CallTask-->>-BP/Job1: Response
+BP/CallTask-->>-BP/job01: Response
 
-BP/Job1->>+BP/CallTask: Task2@BO/Task1_REST
+BP/job01->>+BP/CallTask: Task2@BO/Task1_REST
 BP/CallTask->>+BO/Task1_REST: invoke Task2
 BO/Task1_REST->>+/Task1_REST/Task:REST Req
 /Task1_REST/Task-->>-BO/Task1_REST:REST Resp
 BO/Task1_REST-->>-BP/CallTask: Response
-BP/CallTask-->>-BP/Job1: Response
+BP/CallTask-->>-BP/job01: Response
 
-BP/Job1->>+BP/CallTask: Task3@BO/Task2_REST
+BP/job01->>+BP/CallTask: Task3@BO/Task2_REST
 BP/CallTask->>+BO/Task2_REST: Invoke Task3
 BO/Task2_REST->>+/Task2_REST/Task:REST Req
 /Task2_REST/Task->>+BG Job:Job Command
@@ -83,14 +83,14 @@ BG Job->>-/TaskComplete:REST Req(Token)
 activate /TaskComplete
 /TaskComplete->>BP/CallTask:Deffered Resp(Token)
 deactivate /TaskComplete
-BP/CallTask-->>-BP/Job1: Response
+BP/CallTask-->>-BP/job01: Response
 
-BP/Job1-->>-BS/Direct: Response
+BP/job01-->>-BS/Direct: Response
 ```
 
 ### 処理結果
 
-その結果、IRISサーバ#1(コンテナ task)上には、同一時刻帯に下記の2個(JOB1は5分ごとに自動起動されるので、時間経過とともに数は増えます)のグローバルが保存されます。
+その結果、IRISサーバ#1(コンテナ task)上には、同一時刻帯に下記の2個(job01は5分ごとに自動起動されるので、時間経過とともに数は増えます)のグローバルが保存されます。
 
 ```
 docker compose exec task1 iris session iris -UTASK
@@ -106,7 +106,7 @@ TASK>zw ^MyTask
 ^MyTask(8)=$lb("05/23/2023 12:45:00","MyTask.NewClass2",52,"abc",0,"","","")
 ```
 
-その結果、IRISサーバ#2(コンテナ task2)上には、同一時刻帯に下記の1個(JOB1は5分ごとに自動起動されるので、時間経過とともに数は増えます)のグローバルが保存されます。
+その結果、IRISサーバ#2(コンテナ task2)上には、同一時刻帯に下記の1個(job01は5分ごとに自動起動されるので、時間経過とともに数は増えます)のグローバルが保存されます。
 
 ```
 docker compose exec task2 iris session iris -UTASK
@@ -119,28 +119,28 @@ TASK>zw ^MyTask
 ^MyTask(4)=$lb("05/23/2023 12:45:00","MyTask.NewClass3",52,"abc",0,"","","")
 ```
 
-## JOB2
+## job02
 
-> 以降のジョブのマニュアル起動および結果の確認作業は、JOB1の自動起動が有効のままだと分かりにくくなるので、いったん[タスクスケジュール](http://localhost:52873/csp/sys/op/%25CSP.UI.Portal.TaskSchedule.zen?$NAMESPACE=JOB&$NAMESPACE=JOB)でJob1を一時停止するのが良いです。
+> 以降のジョブのマニュアル起動および結果の確認作業は、job01の自動起動が有効のままだと分かりにくくなるので、いったん[タスクスケジュール](http://localhost:52873/csp/sys/op/%25CSP.UI.Portal.TaskSchedule.zen?$NAMESPACE=JOB&$NAMESPACE=JOB)でjob01を一時停止するのが良いです。
 
 ### 起動方法
 
 ```
-$ docker compose exec job iris session iris -U job job2   (BP/Job2)
+$ docker compose exec job iris session iris -U job job02   (BP/job02)
 ```
 
 ### 処理内容
 
-BP/job2aを非同期呼び出し後、指定された時間("PT5S", 5秒)だけBPを停止、その後,BP/job2bを非同期実行し、双方の完了を待つ。双方が正常終了した場合にのみ、task1(ターゲット:Task1_REST,MyTask.NewClass1)を起動する。  
+BP/job02aを非同期呼び出し後、指定された時間("PT5S", 5秒)だけBPを停止、その後,BP/job02bを非同期実行し、双方の完了を待つ。双方が正常終了した場合にのみ、task1(ターゲット:Task1_REST,MyTask.NewClass1)を起動する。  
 
-BP/job2aはtask1(ターゲット:Task1_REST,MyTask.SlowTask)を実行します。  
+BP/job02aはtask1(ターゲット:Task1_REST,MyTask.SlowTask)を実行します。  
 > MyTask.SlowTaskは10秒間sleepして、時間がかかる処理を再現しています。
 
-BP/job2bはtask1(ターゲット:Task1_REST,MyTask.FastTask)を実行します。  
+BP/job02bはtask1(ターゲット:Task1_REST,MyTask.FastTask)を実行します。  
 
-下記のトレースにおいて、Job2->Job2aへのCallへの応答はその10秒後になっている(SlowTaskが10秒かかるため)こと、Job2->Job2bへのCall発生はJob2aへのコールの5秒後(PT5Sの指定による)となっていること(その応答は即時になっている)、Job2->CallTaskへのCallは、双方が完了した後となっていることが確認出来ます。
+下記のトレースにおいて、job02->job02aへのCallへの応答はその10秒後になっている(SlowTaskが10秒かかるため)こと、job02->job02bへのCall発生はjob02aへのコールの5秒後(PT5Sの指定による)となっていること(その応答は即時になっている)、job02->CallTaskへのCallは、双方が完了した後となっていることが確認出来ます。
 
-![](images/job2.png)
+![](images/job02.png)
 
 
 ### 処理結果
@@ -157,14 +157,14 @@ TASK>zw ^MyTask
 ^MyTask(3)=$lb("05/22/2023 14:58:09","MyTask.NewClass1",1,"abc",0,"","","")
 ```
 
-## JOB3
+## job03
 
-ほぼBP/JOB2と同じ処理ですが簡易版です。BP/JOB2はBP/JOB2a, BP/JOB2bの呼び出しを行っていますが、JOB3はBP/CallTaskを直接使用しています。
+ほぼBP/job02と同じ処理ですが簡易版です。BP/job02はBP/job02a, BP/job02bの呼び出しを行っていますが、job03はBP/CallTaskを直接使用しています。
 
 ### 起動方法
 
 ```
-$ docker compose exec job iris session iris -U job job3   (BP/Job3)
+$ docker compose exec job iris session iris -U job job03   (BP/job03)
 ```
 
 ### 処理内容
@@ -183,15 +183,15 @@ TASK>zw ^MyTask
 ^MyTask(6)=$lb("05/22/2023 15:24:55","MyTask.NewClass1",22,"abc",0,"","","")
 ```
 
-## JOB4 
+## job04 
 
 ### 起動方法
 
 ```
-$ docker compose exec job iris session iris -U job job4   (BP/Job4)
+$ docker compose exec job iris session iris -U job job04   (BP/job04)
 ```
 
-job4はワークフローが介在します。そのためBPの処理は[ユーザポータル](http://localhost:9203/csp/job/_DeepSee.UserPortal.Home.zen)にて、人によるアクションがとられるまで保留されます。その結果、端末は応答待ち状態になります。
+job04はワークフローが介在します。そのためBPの処理は[ユーザポータル](http://localhost:9203/csp/job/_DeepSee.UserPortal.Home.zen)にて、人によるアクションがとられるまで保留されます。その結果、端末は応答待ち状態になります。
 
 ### 処理内容
 
@@ -210,16 +210,16 @@ TASK>zw ^MyTask
 ^MyTask(4)=$lb("05/22/2023 16:19:38","MyTask.NewClass2",15,"abc",0,"","","")
 ```
 
-## ERROR1
+## forceError
 ### 起動方法
 
 ```
-$ docker compose exec job iris session iris -U job error1  (BP/Job1)
+$ docker compose exec job iris session iris -U job forceError  (BP/job01)
 ```
 
 ### 処理内容
 
-JOB1を使用しますが、error1を使用すると、疑似的にアプリケーションレベルのエラーを発生させることができます。MyTask.NewTask2.cls内で強制的にゼロ除算エラーを発生させます。エラー情報は、ワークフローの要求に変換され、オペレータの指示待ち状態になります。そのため処理は、オペレータにより何らかのアクションがとられるまで保留されます。
+job01を使用しますが、forceErrorを使用すると、疑似的にアプリケーションレベルのエラーを発生させることができます。MyTask.NewTask2.cls内で強制的にゼロ除算エラーを発生させます。エラー情報は、ワークフローの要求に変換され、オペレータの指示待ち状態になります。そのため処理は、オペレータにより何らかのアクションがとられるまで保留されます。
 
 ![](images/wf2.png)
 
@@ -227,7 +227,7 @@ JOB1を使用しますが、error1を使用すると、疑似的にアプリケ�
 
 ![](images/up.png)
 
-対処の選択肢には、再実行(エラーが発生したコール、今回のケースではMyTask.NewTask2.clsを呼び出す2番目のBP/CallTask->Task1_RESTコール、から再実行する)、継続(エラーを無視して継続する、今回のケースではMyTask.NewTask3.clsを呼び出す、BP/CallTask->Task2_RESTコールから処理を継続する)、中止(残りの処理の実行を中止して、BP/Job1を終了する)があります。
+対処の選択肢には、再実行(エラーが発生したコール、今回のケースではMyTask.NewTask2.clsを呼び出す2番目のBP/CallTask->Task1_RESTコール、から再実行する)、継続(エラーを無視して継続する、今回のケースではMyTask.NewTask3.clsを呼び出す、BP/CallTask->Task2_RESTコールから処理を継続する)、中止(残りの処理の実行を中止して、BP/job01を終了する)があります。
 
 > 今回のゼロ除算エラーは何度実行しても発生するので、「継続」を選択します。これで先ほど保留されていたBPが再開し、次の処理(BO/Task2_RESTの呼び出し)に進み、端末に結果が表示されます。
 
@@ -269,15 +269,15 @@ BPの処理については、先ほどと同様に、ユーザポータルでワ
 様々なファイル待ちのケース。
 
 1. 単一ローカルファイル待ち
-job5File
+job05File
 2. 複数ローカルファイル待ち
-job6Files
+job06Files
 3. 複数ローカルフォルダ待ち
-job7Folders
+job07Folders
 4. 単一SFTPファイル待ち
-job8RemoteFile
+job08RemoteFile
 5. 複数SFTPファイル待ち
-job9RemoteFiles
+job09RemoteFiles
 6. 複数SFTPフォルダ待ち(未完)
 job10RemoteFolders
 
@@ -311,9 +311,9 @@ common/folderB.txt
 手元ファイルを外部にSFTPするなど(その他RESTでも何でも良い)をトリガに、その応答がしばらくしてから(非同期で)ローカルファイルにPutされるような連携を想定。
 
 ```
-docker compose exec job iris session iris -UJOB job5File
+docker compose exec job iris session iris -UJOB job05File
 ```
-あるいは、job5FileをSMPでTEST実行する。いずれもブロックされる。
+あるいは、job05FileをSMPでTEST実行する。いずれもブロックされる。
 
 下記のSQLで待ちファイルが登録されていることを確認で出来る。
 ```
@@ -337,7 +337,7 @@ docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/100.r
 # 複数ローカルファイル待ち
 
 ```
-docker compose exec job iris session iris -UJOB job6Files
+docker compose exec job iris session iris -UJOB job06Files
 ```
 
 1. 外部システムの動作を、task1からsftp経由でjobにファイルをputすることで再現する方法
@@ -356,7 +356,7 @@ docker compose exec job bash -c 'echo "abc" > /home/sftp_user1/incoming/in/200.r
 # 複数ローカルフォルダ待ち
 
 ```
-docker compose exec job iris session iris -UJOB job7Folders
+docker compose exec job iris session iris -UJOB job07Folders
 ```
 このタイミングで、待ちフォルダが登録される
 ```
@@ -393,7 +393,7 @@ sftp> put done.sem incoming/common/done.sem
 # 単一SFTPファイル待ち
 
 ```
-docker compose exec job iris session iris -UJOB job8RemoteFile
+docker compose exec job iris session iris -UJOB job08RemoteFile
 ```
 
 アプリケーションによるファイルの作成を再現。
@@ -411,7 +411,7 @@ outgoing/100.res.txt
 # 複数SFTPファイル待ち
 
 ```
-docker compose exec job iris session iris -UJOB job9RemoteFiles
+docker compose exec job iris session iris -UJOB job09RemoteFiles
 ```
 
 アプリケーションによるファイルの作成を再現。

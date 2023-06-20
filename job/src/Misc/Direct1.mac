@@ -1,0 +1,14 @@
+ROUTINE Direct1
+main() public {
+	// https://docs.intersystems.com/iris20231/csp/docbook/Doc.View.cls?KEY=ECONFIG_PoolSize
+	// https://docs.intersystems.com/iris20231/csp/docbook/DocBook.UI.Page.cls?KEY=EGDV_busproc#EGDV_busproc_principles
+	// Is this deadlock, not resource (pool) exhaustion?
+	// この状態はActor Poolを2に設定することで解消するが、Actor Poolを2にすると、Mainが2個同時並行に動作する(FIFOが維持できなくなる)可能性が生まれる。
+	// Mainのジョブ数を1に限定した上で、Subをリソース(pool)待ちさせないようにするには、Mainに専用Pool=1を設定し、SubはActor Poolを使用するか、専用pool=1を設定する必要がある。
+	Set tSC = ##class(Ens.Director).CreateBusinessService("Direct1",.tService)
+	If ($IsObject(tService)) {
+		Set req=##class(Ens.Request).%New()
+		Set tSC = tService.ProcessInput(req,.res)
+		zw res
+	}
+}

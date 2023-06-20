@@ -1,5 +1,5 @@
 /// BPのテンプレート
-Class Task.Process.Job0 Extends Ens.BusinessProcessBPL [ ClassType = persistent, DependsOn = Task.Context.Custom, ProcedureBlock ]
+Class Task.Process.Job00 Extends Ens.BusinessProcessBPL [ ClassType = persistent, DependsOn = Task.Context.Custom, ProcedureBlock ]
 {
 
 Storage Default

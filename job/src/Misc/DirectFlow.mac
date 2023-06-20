@@ -1,6 +1,6 @@
-ROUTINE deadlock3
+ROUTINE DirectFlow
 main() public {
-	Set tSC = ##class(Ens.Director).CreateBusinessService("Direct3",.tService)
+	Set tSC = ##class(Ens.Director).CreateBusinessService("DirectFlow",.tService)
 	If ($IsObject(tService)) {
 		Set req=##class(Ens.Request).%New()
 		Set tSC = tService.ProcessInput(req,.res)

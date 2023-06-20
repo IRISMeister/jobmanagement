@@ -1,5 +1,5 @@
 /// Wait Folders
-Class Task.Process.job8RemoteFile Extends Ens.BusinessProcessBPL [ ClassType = persistent, DependsOn = Task.Context.Custom, ProcedureBlock ]
+Class Task.Process.job08RemoteFile Extends Ens.BusinessProcessBPL [ ClassType = persistent, DependsOn = Task.Context.Custom, ProcedureBlock ]
 {
 
 Storage Default
