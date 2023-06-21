@@ -15,8 +15,8 @@ Method OnProcessInput(pInput As %RegisteredObject, Output pOutput As %Registered
 	Set rs=stmt.%ExecDirect(,"SELECT FileName,Token FROM Task_Data.WaitFile where TargetHostName='$local' and FileName=?",filename)
 	If rs.%Next() {
 		#; pInput : %Library.FileCharacterStream
-		#; EnsLib.File.InboundAdapterは処理済みファイルを削除/移動するが、SendDeferredResponse()を使用する場合
-		#; そのタイミングを制御できないのでコピーを作成して、コピーを処理に回す。
+		#; EnsLib.File.InboundAdapterは、OnProcessInput()正常完了後に、処理済みファイルを削除/移動する。
+		#; SendDeferredResponse()を使用する場合、そのタイミングを制御できないのでコピーを作成して、コピーを処理に回す。
 		Set copyfilename=..CopyFolderName_##class(%File).GetFilename(filename)
 		Set fs=##class(%Library.FileBinaryStream).%New()
 		Set fs.Filename=copyfilename
@@ -39,12 +39,13 @@ Method OnProcessInput(pInput As %RegisteredObject, Output pOutput As %Registered
 
 /*
 //Fileアダプタ無しの実装。
-//ファイルの場所はテーブルから取得するので、ローカルの任意の場所を監視できるがSFTP上のファイルには使えない。
-Parameter ADAPTER = "EnsLib.InboundAdapter";
+// こちらのほうが実装が容易(処理したファイルが削除・移動されないのでコピー作成も不要)だが、SFTPでの処理方法と乖離する。
+//(ファイルの場所をテーブルから取得するので、ローカルの任意の場所を監視できるがSFTP上のファイルには使えない)
+Parameter ADAPTER = "Ens.InboundAdapter";
 Method OnProcessInput(pInput As %RegisteredObject, Output pOutput As %RegisteredObject) As %Status
 {
 	Set stmt=##class(%SQL.Statement).%New()
-	Set rs=stmt.%ExecDirect(,"SELECT FileName,Token FROM Task_Data.WaitFile")
+	Set rs=stmt.%ExecDirect(,"SELECT FileName,Token FROM Task_Data.WaitFile where TargetHostName='$local'")
 	While(rs.%Next()) {
 		Set filename=rs.FileName
 		$$$TRACE(filename)

@@ -51,7 +51,7 @@ XData ProductionDefinition
   </Item>
   <Item Name="job03" Category="job" ClassName="Task.Process.job03" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="true" Schedule="">
   </Item>
-  <Item Name="job04" Category="job" ClassName="Task.Process.job04" PoolSize="1" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
+  <Item Name="job04" Category="job" ClassName="Task.Process.job04" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
   <Item Name="job05File" Category="job" ClassName="Task.Process.job05File" PoolSize="0" Enabled="true" Foreground="false" Comment="" LogTraceEvents="false" Schedule="">
   </Item>
