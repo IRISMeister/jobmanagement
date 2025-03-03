@@ -81,6 +81,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <assign property="callrequest.%Subject" value="&quot;ジョブでエラー発生。対処願います。&quot;" action="set" />
 <assign property="callrequest.%Message" value="context.TaskErrorMessage" action="set" />
 <assign property="callrequest.%FormFields" value="&quot;Comment&quot;" action="set" />
+<assign property="callrequest.%UserName" value="&quot;_SYSTEM&quot;" action="set" />
 <assign property="callrequest.%FormTemplate" value="&quot;WFFormTemplate.csp&quot;" action="set" />
 </request>
 <response type='EnsLib.Workflow.TaskResponse' >
