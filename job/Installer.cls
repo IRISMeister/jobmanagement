@@ -10,7 +10,7 @@ XData setup [ XMLNamespace = INSTALLER ]
     <Configuration>
       <Database Name="${Namespace}" Dir="${DBDIR}${Namespace}" Create="yes" Resource="%DB_${Namespace}"/>
     </Configuration>
-    <CSPApplication Url="/csp/${Namespace}" Directory="${CSPDIR}${Namespace}" GroupById="%ISCMgtPortal" Resource=""/>
+    <CSPApplication Url="/csp/${Namespace}" Directory="${CSPDIR}${Namespace}" Recurse="1" GroupById="%ISCMgtPortal" Resource=""/>
     <CSPApplication Url="/csp/${Namespace}/api" Directory="${CSPDIR}${Namespace}" Resource=""/>
     <Import File="${SRCDIR}" Flags="ck" Recurse="true"/>
 	<Production Name="Task.Production1" AutoStart="1">

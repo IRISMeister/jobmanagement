@@ -28,7 +28,7 @@
 				"webServer": {
 					"scheme": "http",
 					"host": "localhost",
-					"port": 52873
+					"port": 9203
 				},
 				"username": "SuperUser",
 				"password": "SYS"
@@ -37,7 +37,7 @@
 				"webServer": {
 					"scheme": "http",
 					"host": "localhost",
-					"port": 52874
+					"port": 9204
 				},
 				"username": "SuperUser",
 				"password": "SYS"
@@ -46,7 +46,7 @@
 				"webServer": {
 					"scheme": "http",
 					"host": "localhost",
-					"port": 52774
+					"port": 9203
 				},
 				"username": "SuperUser",
 				"password": "SYS"

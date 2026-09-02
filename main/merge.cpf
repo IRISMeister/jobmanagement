@@ -3,5 +3,8 @@ globals=0,0,32,0,0,0
 routines=32
 
 [SQL]
-TimePrecision=6
 SaveMAC=1
+
+[Monitor]
+OTELMetrics=1
+OTELLogs=1

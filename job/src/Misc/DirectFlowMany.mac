@@ -1,7 +1,7 @@
-ROUTINE DirectFlow
+ROUTINE DirectFlowMany
 main() public {
 	Set st=$ZH
-	Set tSC = ##class(Ens.Director).CreateBusinessService("DirectFlow",.tService)
+	Set tSC = ##class(Ens.Director).CreateBusinessService("DirectFlowMany",.tService)
 	If ($IsObject(tService)) {
 		Set req=##class(Ens.Request).%New()
 		Set tSC = tService.ProcessInput(req,.res)

@@ -9,6 +9,8 @@ $ docker compose build
 # 実行方法
 ```bash
 $ docker compose up -d
+   or 
+$ ./up.sh   (sshdを起動する場合)
 ```
 管理ポータルにアクセスします。ユーザ名/パスワードは _SYSTEM/SYSです。
 

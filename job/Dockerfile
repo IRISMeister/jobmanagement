@@ -1,5 +1,6 @@
 #FROM store/intersystems/iris-community:2020.3.0.221.0
-FROM containers.intersystems.com/intersystems/iris-community:2024.1
+#FROM containers.intersystems.com/intersystems/iris-community:2024.3
+FROM irepo.intersystems.com/intersystems/iris-community:latest-em 
 ARG COMMIT_ID="unknown"
 
 USER root
@@ -73,6 +74,9 @@ RUN iris start $ISC_PACKAGE_INSTANCENAME nostu quietly \
  && rm -f $ISC_PACKAGE_INSTALLDIR/mgr/alerts.log \
  && rm -f $ISC_PACKAGE_INSTALLDIR/mgr/journal/* 
 #-- until imageBuildSteps.sh is chnaged--
+
+# CSP.ini変更
+RUN sed -i 's/SM_Timeout=28800/SM_Timeout=28800\nSystem_Manager=*.*.*.*\nREGISTRY_METHODS=Disabled/' /usr/irissys/csp/bin/CSP.ini
 
 COPY outgoing/* outgoing/
 

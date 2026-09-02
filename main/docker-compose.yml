@@ -1,4 +1,3 @@
-version: '3.7'
 services: 
   job: 
     build: 
@@ -6,7 +5,7 @@ services:
       dockerfile: Dockerfile
     command: --ISCAgent false --monitorCPF false
     ports:
-      - 52873:52773
+      - 9203:52773
       - 9103:1972
       - "63300:63300"  # foreground
       - "63301:63301"  # foreground
@@ -22,7 +21,7 @@ services:
     build: ../task
     command: --ISCAgent false --monitorCPF false
     ports:
-      - 52874:52773
+      - 9204:52773
       - 9104:1972
     environment:
       - TZ=JST-9
